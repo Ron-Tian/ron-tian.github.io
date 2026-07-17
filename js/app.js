@@ -5,6 +5,53 @@
  */
 
 /* ========================================
+   Giscus 评论配置
+   获取 repoId / categoryId 步骤：
+   1. 仓库 Settings → General → Features 勾选 Discussions
+   2. 访问 https://github.com/apps/giscus 安装到本仓库
+   3. 访问 https://giscus.app 输入 Ron-Tian/Ron-Tian.github.io 生成配置
+   4. 把生成的 data-repo-id / data-category-id 填到下面
+   ======================================== */
+const GISCUS_CONFIG = {
+  repo: 'Ron-Tian/Ron-Tian.github.io',
+  repoId: '',            // ← 从 giscus.app 获取后填入，如 'R_kgDOLxxxxx'
+  category: 'Comments',  // Discussion 分类名
+  categoryId: '',        // ← 从 giscus.app 获取后填入，如 'DIC_kwDOLxxxxx'
+};
+
+function loadGiscus(container, term) {
+  if (!container) return;
+  if (!GISCUS_CONFIG.repoId || !GISCUS_CONFIG.categoryId) {
+    container.innerHTML = `
+      <div class="comments-hint">
+        评论功能待配置 · 请在 <code>js/app.js</code> 顶部 <code>GISCUS_CONFIG</code> 填入 repoId 和 categoryId
+      </div>
+    `;
+    return;
+  }
+  // 清空旧评论（SPA 切换文章时必须重建，否则 iframe 不会刷新）
+  container.innerHTML = '';
+  const script = document.createElement('script');
+  script.src = 'https://giscus.app/client.js';
+  script.setAttribute('data-repo', GISCUS_CONFIG.repo);
+  script.setAttribute('data-repo-id', GISCUS_CONFIG.repoId);
+  script.setAttribute('data-category', GISCUS_CONFIG.category);
+  script.setAttribute('data-category-id', GISCUS_CONFIG.categoryId);
+  script.setAttribute('data-mapping', 'specific');
+  script.setAttribute('data-term', term);
+  script.setAttribute('data-strict', '1');
+  script.setAttribute('data-reactions-enabled', '1');
+  script.setAttribute('data-emit-metadata', '0');
+  script.setAttribute('data-input-position', 'top');
+  script.setAttribute('data-theme', 'light');
+  script.setAttribute('data-lang', 'zh-CN');
+  script.setAttribute('data-loading', 'lazy');
+  script.crossOrigin = 'anonymous';
+  script.async = true;
+  container.appendChild(script);
+}
+
+/* ========================================
    工具函数
    ======================================== */
 function formatDate(dateStr) {
@@ -296,10 +343,17 @@ async function renderPost(container, postId) {
           </div>
         ` : '<div></div>'}
       </nav>
+      <section class="comments-section">
+        <h2 class="comments-title">评论</h2>
+        <div class="giscus" id="giscusContainer"></div>
+      </section>
     </div>
   `;
 
   initReadingProgress();
+
+  // 加载 Giscus 评论（用文章 id 作为 discussion 标识）
+  loadGiscus(document.getElementById('giscusContainer'), postId);
 }
 
 /* ========================================
