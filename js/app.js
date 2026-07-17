@@ -1,0 +1,489 @@
+/**
+ * 字由 - SPA 应用主逻辑 v3
+ * 顶部导航 + 居中内容的网站风格
+ * Hash 路由：#/  #/post/:id  #/tag  #/tag/:name  #/about
+ */
+
+/* ========================================
+   工具函数
+   ======================================== */
+function formatDate(dateStr) {
+  const d = new Date(dateStr);
+  return `${d.getFullYear()} 年 ${d.getMonth() + 1} 月 ${d.getDate()} 日`;
+}
+
+function formatDateShort(dateStr) {
+  const d = new Date(dateStr);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function configureMarked() {
+  if (typeof marked !== 'undefined') {
+    try {
+      marked.setOptions({ breaks: true, gfm: true });
+    } catch (e) {
+      console.warn('[Marked] setOptions failed:', e.message);
+    }
+  }
+}
+
+function renderMarkdown(content) {
+  if (typeof marked === 'undefined') {
+    return '<pre style="white-space:pre-wrap;">' + escapeHtml(content) + '</pre>';
+  }
+  try {
+    return marked.parse(content);
+  } catch (e) {
+    return '<pre style="white-space:pre-wrap;">' + escapeHtml(content) + '</pre>';
+  }
+}
+
+/* ========================================
+   路由
+   ======================================== */
+function navigate(path) {
+  let hash = path ? `#/${path}` : '#/';
+  window.location.hash = hash;
+  closeSearch();
+  window.scrollTo(0, 0);
+}
+
+function getRoute() {
+  const hash = window.location.hash.slice(1);
+  if (!hash || hash === '/') return { view: 'home' };
+  const parts = hash.split('/').filter(Boolean);
+  if (parts[0] === 'post' && parts[1]) return { view: 'post', id: parts[1] };
+  if (parts[0] === 'tag') return parts[1] ? { view: 'tag', name: decodeURIComponent(parts[1]) } : { view: 'tags' };
+  if (parts[0] === 'about') return { view: 'about' };
+  return { view: 'home' };
+}
+
+/* ========================================
+   导航高亮
+   ======================================== */
+function updateNavActive(route) {
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.classList.remove('active');
+  });
+  if (route.view === 'home') {
+    document.querySelector('.nav-link[data-route=""]')?.classList.add('active');
+  } else if (route.view === 'tags' || route.view === 'tag') {
+    document.querySelector('.nav-link[data-route="tag"]')?.classList.add('active');
+  } else if (route.view === 'about') {
+    document.querySelector('.nav-link[data-route="about"]')?.classList.add('active');
+  }
+}
+
+/* ========================================
+   搜索
+   ======================================== */
+function toggleSearch() {
+  const expand = document.getElementById('searchExpand');
+  const results = document.getElementById('searchResults');
+  if (expand.classList.contains('active')) {
+    closeSearch();
+  } else {
+    expand.classList.add('active');
+    results.style.display = 'block';
+    setTimeout(() => document.getElementById('searchInput').focus(), 50);
+  }
+}
+
+function closeSearch() {
+  const expand = document.getElementById('searchExpand');
+  const results = document.getElementById('searchResults');
+  const input = document.getElementById('searchInput');
+  expand.classList.remove('active');
+  results.style.display = 'none';
+  input.value = '';
+  results.innerHTML = '';
+}
+
+function initSearch() {
+  const input = document.getElementById('searchInput');
+  if (!input) return;
+
+  let debounceTimer;
+  input.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(async () => {
+      const query = input.value.trim();
+      const results = document.getElementById('searchResults');
+
+      if (!query) {
+        results.innerHTML = '';
+        return;
+      }
+
+      const posts = await PostLoader.searchPosts(query);
+      const sorted = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      if (sorted.length === 0) {
+        results.innerHTML = '<div class="search-result-item"><div class="search-result-excerpt">未找到匹配文章</div></div>';
+      } else {
+        results.innerHTML = sorted.map(post => `
+          <div class="search-result-item" onclick="navigate('post/${encodeURIComponent(post.id)}')">
+            <div class="search-result-title">${escapeHtml(post.title)}</div>
+            <div class="search-result-excerpt">${escapeHtml(post.excerpt)}</div>
+          </div>
+        `).join('');
+      }
+    }, 200);
+  });
+
+  // 点击外部关闭搜索
+  document.addEventListener('click', (e) => {
+    const header = document.querySelector('.header-search');
+    const results = document.getElementById('searchResults');
+    if (header && !header.contains(e.target) && results && !results.contains(e.target)) {
+      closeSearch();
+    }
+  });
+
+  // ESC 关闭
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeSearch();
+  });
+}
+
+/* ========================================
+   渲染视图
+   ======================================== */
+async function renderView() {
+  const route = getRoute();
+  const content = document.getElementById('content');
+  const progressBar = document.getElementById('progressBar');
+
+  progressBar.style.display = route.view === 'post' ? 'block' : 'none';
+  updateNavActive(route);
+
+  content.innerHTML = `
+    <div class="loading">
+      <div class="loading-spinner"></div>
+      <p>加载中...</p>
+    </div>
+  `;
+
+  try {
+    switch (route.view) {
+      case 'home': await renderHome(content); break;
+      case 'post': await renderPost(content, route.id); break;
+      case 'tags': await renderTags(content); break;
+      case 'tag': await renderTagFilter(content, route.name); break;
+      case 'about': await renderAbout(content); break;
+    }
+  } catch (err) {
+    console.error('渲染失败:', err);
+    content.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">😵</div>
+        <p>加载失败</p>
+        <p style="margin-top:8px;font-size:0.8rem;color:var(--c-text-3);">${escapeHtml(err.message)}</p>
+      </div>
+    `;
+  }
+}
+
+/* ========================================
+   视图：首页
+   ======================================== */
+async function renderHome(container) {
+  const posts = await PostLoader.loadAllPosts();
+  const sorted = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  document.title = '字由 — 写字的自由';
+
+  container.innerHTML = `
+    <div class="home-hero fade-in">
+      <h1>字<span class="accent">由</span></h1>
+      <p class="tagline">写字的自由</p>
+    </div>
+    <div class="list-header">
+      <h2>文章</h2>
+      <span class="count">共 ${sorted.length} 篇</span>
+    </div>
+    <div class="post-list" id="postList"></div>
+  `;
+
+  const list = document.getElementById('postList');
+  list.innerHTML = sorted.map(post => `
+    <div class="post-row fade-in" onclick="navigate('post/${encodeURIComponent(post.id)}')">
+      <div class="post-row-meta">
+        <span>${formatDateShort(post.date)}</span>
+        <span class="dot"></span>
+        <span>${post.readingTime} 分钟</span>
+      </div>
+      <h3 class="post-row-title">${escapeHtml(post.title)}</h3>
+      <p class="post-row-excerpt">${escapeHtml(post.excerpt)}</p>
+      <div class="post-row-tags">
+        ${post.tags.map(tag => `<span class="tag-mini" onclick="event.stopPropagation(); navigate('tag/${encodeURIComponent(tag)}')">${escapeHtml(tag)}</span>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ========================================
+   视图：文章详情
+   ======================================== */
+async function renderPost(container, postId) {
+  const post = await PostLoader.getPostById(postId);
+
+  if (!post) {
+    document.title = '文章不存在 — 字由';
+    container.innerHTML = `
+      <div class="post-detail">
+        <div class="empty-state">
+          <div class="empty-state-icon">📄</div>
+          <p>文章不存在</p>
+          <p style="margin-top:12px;"><a href="#/" onclick="navigate(''); return false;">← 返回首页</a></p>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  document.title = `${post.title} — 字由`;
+
+  const htmlContent = renderMarkdown(post.content);
+  const { prev, next } = await PostLoader.getAdjacentPosts(postId);
+
+  container.innerHTML = `
+    <div class="post-detail fade-in">
+      <a class="back-link" onclick="navigate('')">← 返回</a>
+      <div class="post-detail-header">
+        <div class="post-detail-tags">
+          ${post.tags.map(tag => `<span class="tag-mini" onclick="navigate('tag/${encodeURIComponent(tag)}')">${escapeHtml(tag)}</span>`).join('')}
+        </div>
+        <h1 class="post-detail-title">${escapeHtml(post.title)}</h1>
+        <div class="post-detail-meta">
+          <span>${formatDate(post.date)}</span>
+          <span class="dot"></span>
+          <span>${post.readingTime} 分钟阅读</span>
+        </div>
+      </div>
+      <div class="markdown-body">
+        ${htmlContent}
+      </div>
+      <nav class="post-nav">
+        ${prev ? `
+          <div class="post-nav-item prev" onclick="navigate('post/${encodeURIComponent(prev.id)}')">
+            <div class="post-nav-label">← 上一篇</div>
+            <div class="post-nav-title">${escapeHtml(prev.title)}</div>
+          </div>
+        ` : '<div></div>'}
+        ${next ? `
+          <div class="post-nav-item next" onclick="navigate('post/${encodeURIComponent(next.id)}')">
+            <div class="post-nav-label">下一篇 →</div>
+            <div class="post-nav-title">${escapeHtml(next.title)}</div>
+          </div>
+        ` : '<div></div>'}
+      </nav>
+    </div>
+  `;
+
+  initReadingProgress();
+}
+
+/* ========================================
+   视图：标签总览
+   ======================================== */
+async function renderTags(container) {
+  const tags = await PostLoader.getAllTags();
+  document.title = '标签 — 字由';
+
+  container.innerHTML = `
+    <div class="tag-cloud-page fade-in">
+      <div class="page-header">
+        <h1>标签</h1>
+        <div class="desc">按主题浏览 · 共 ${tags.length} 个标签</div>
+      </div>
+      <div class="tag-cloud">
+        ${tags.map(tag => `
+          <span class="tag-cloud-item" onclick="navigate('tag/${encodeURIComponent(tag.name)}')">
+            ${escapeHtml(tag.name)}
+            <span class="count">${tag.count}</span>
+          </span>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+/* ========================================
+   视图：标签筛选
+   ======================================== */
+async function renderTagFilter(container, tagName) {
+  const posts = await PostLoader.getPostsByTag(tagName);
+  const sorted = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
+  const allTags = await PostLoader.getAllTags();
+
+  document.title = `标签: ${tagName} — 字由`;
+
+  container.innerHTML = `
+    <div class="fade-in">
+      <div class="page-header">
+        <h1>「${escapeHtml(tagName)}」</h1>
+        <div class="desc">${sorted.length} 篇文章</div>
+      </div>
+      <div class="tag-cloud" style="margin-bottom:32px;">
+        ${allTags.map(tag => `
+          <span class="tag-cloud-item ${tag.name === tagName ? 'active' : ''}" onclick="navigate('tag/${encodeURIComponent(tag.name)}')">
+            ${escapeHtml(tag.name)}
+            <span class="count">${tag.count}</span>
+          </span>
+        `).join('')}
+      </div>
+      <div class="post-list" id="postList"></div>
+    </div>
+  `;
+
+  const list = document.getElementById('postList');
+  if (sorted.length === 0) {
+    list.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">📭</div>
+        <p>该标签下暂无文章</p>
+      </div>
+    `;
+    return;
+  }
+
+  list.innerHTML = sorted.map(post => `
+    <div class="post-row" onclick="navigate('post/${encodeURIComponent(post.id)}')">
+      <div class="post-row-meta">
+        <span>${formatDateShort(post.date)}</span>
+        <span class="dot"></span>
+        <span>${post.readingTime} 分钟</span>
+      </div>
+      <h3 class="post-row-title">${escapeHtml(post.title)}</h3>
+      <p class="post-row-excerpt">${escapeHtml(post.excerpt)}</p>
+      <div class="post-row-tags">
+        ${post.tags.map(tag => `<span class="tag-mini" onclick="event.stopPropagation(); navigate('tag/${encodeURIComponent(tag)}')">${escapeHtml(tag)}</span>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ========================================
+   视图：关于页面
+   ======================================== */
+async function renderAbout(container) {
+  document.title = '关于 — 字由';
+
+  const aboutData = await PostLoader.getAboutContent();
+  let aboutHtml = '';
+  if (aboutData) {
+    aboutHtml = renderMarkdown(aboutData.content);
+  } else {
+    aboutHtml = '<p>关于页面内容加载中...</p>';
+  }
+
+  container.innerHTML = `
+    <div class="about-page fade-in">
+      <div class="about-header">
+        <div class="about-avatar">字</div>
+        <h1 class="about-name">字由</h1>
+        <p class="about-bio">写字的自由 · 记录思考与生活</p>
+      </div>
+      <div class="markdown-body">
+        ${aboutHtml}
+      </div>
+    </div>
+  `;
+}
+
+/* ========================================
+   阅读进度条
+   ======================================== */
+function initReadingProgress() {
+  const fill = document.getElementById('progressBarFill');
+  if (!fill) return;
+
+  function updateProgress() {
+    const scrollTop = window.scrollY;
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    fill.style.width = `${Math.min(100, progress)}%`;
+  }
+
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+}
+
+/* ========================================
+   初始化
+   ======================================== */
+async function init() {
+  try {
+    console.log('[Init] Starting...');
+    configureMarked();
+    console.log('[Init] marked configured, typeof marked =', typeof marked);
+    initSearch();
+    console.log('[Init] search initialized');
+
+    // 预加载文章数据
+    console.log('[Init] Loading posts...');
+    const posts = await PostLoader.loadAllPosts();
+    console.log('[Init] Posts loaded:', posts.length, 'articles');
+    
+    if (posts.length === 0) {
+      // 如果没有文章，显示明确的诊断信息
+      const content = document.getElementById('content');
+      content.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">📭</div>
+          <p>暂未找到文章</p>
+          <p style="margin-top:8px;font-size:0.8rem;color:var(--c-text-3);">
+            可能原因：posts/ 目录为空或 manifest.json 未生成<br>
+            请运行 <code>python scripts/build.py</code> 重新生成
+          </p>
+        </div>
+      `;
+      return;
+    }
+
+    // 监听路由变化
+    window.addEventListener('hashchange', renderView);
+
+    // 首次渲染
+    console.log('[Init] Rendering view...');
+    await renderView();
+    console.log('[Init] Done!');
+  } catch (err) {
+    console.error('[Init] 初始化失败:', err);
+    const content = document.getElementById('content');
+    if (content) {
+      content.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">😵</div>
+          <p>初始化失败</p>
+          <p style="margin-top:8px;font-size:0.8rem;color:var(--c-text-3);">${escapeHtml(err.message || String(err))}</p>
+          <p style="margin-top:12px;font-size:0.75rem;color:var(--c-text-3);">请打开浏览器控制台 (F12) 查看详细错误</p>
+        </div>
+      `;
+    }
+  }
+}
+
+// 全局错误捕获
+window.addEventListener('error', function(e) {
+  console.error('[Global Error]', e.error || e.message);
+});
+
+window.addEventListener('unhandledrejection', function(e) {
+  console.error('[Unhandled Rejection]', e.reason);
+});
+
+// 启动
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}

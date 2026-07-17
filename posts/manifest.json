@@ -1,0 +1,130 @@
+{
+  "posts": [
+    {
+      "file": "about.md",
+      "id": "about",
+      "title": "关于",
+      "date": "2026-01-01",
+      "tags": [
+        "关于"
+      ],
+      "excerpt": "关于博主和这个博客",
+      "cover": "linear-gradient(135deg, #e85d3c 0%, #f0a060 100%)",
+      "readingTime": 3,
+      "type": "page"
+    },
+    {
+      "file": "git-workflow.md",
+      "id": "git-workflow",
+      "title": "Git 工作流最佳实践",
+      "date": "2026-06-01",
+      "tags": [
+        "技术",
+        "Git"
+      ],
+      "excerpt": "从 commit 规范到分支策略，打造高效的团队协作 Git 工作流。",
+      "cover": "linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%)",
+      "readingTime": 11,
+      "type": "post"
+    },
+    {
+      "file": "hello-world.md",
+      "id": "hello-world",
+      "title": "你好，世界 — 我的博客启程",
+      "date": "2026-07-15",
+      "tags": [
+        "随笔",
+        "公告"
+      ],
+      "excerpt": "每一段旅程都始于第一步。这是我的第一篇博文，记录下搭建这个博客的初心与思考。",
+      "cover": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+      "readingTime": 5,
+      "type": "post"
+    },
+    {
+      "file": "javascript-async.md",
+      "id": "javascript-async",
+      "title": "深入理解 JavaScript 异步编程",
+      "date": "2026-07-03",
+      "tags": [
+        "技术",
+        "JavaScript"
+      ],
+      "excerpt": "从回调到 Promise 再到 async/await，梳理 JavaScript 异步编程的演进脉络和最佳实践。",
+      "cover": "linear-gradient(135deg, #f6d365 0%, #fda085 100%)",
+      "readingTime": 12,
+      "type": "post"
+    },
+    {
+      "file": "markdown-guide.md",
+      "id": "markdown-guide",
+      "title": "Markdown 完全指南：从入门到精通",
+      "date": "2026-07-12",
+      "tags": [
+        "技术",
+        "Markdown"
+      ],
+      "excerpt": "Markdown 是一种轻量级标记语言，让你专注于内容而非排版。本文全面介绍 Markdown 语法。",
+      "cover": "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+      "readingTime": 10,
+      "type": "post"
+    },
+    {
+      "file": "minimalist-design.md",
+      "id": "minimalist-design",
+      "title": "极简主义设计：少即是多的力量",
+      "date": "2026-07-08",
+      "tags": [
+        "设计",
+        "思考"
+      ],
+      "excerpt": "极简不是空洞，而是精准。探讨极简主义设计背后的理念和它在数字产品中的应用。",
+      "cover": "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+      "readingTime": 7,
+      "type": "post"
+    },
+    {
+      "file": "reading-notes-2026.md",
+      "id": "reading-notes-2026",
+      "title": "2026 上半年读书笔记精选",
+      "date": "2026-06-28",
+      "tags": [
+        "读书",
+        "随笔"
+      ],
+      "excerpt": "整理了上半年读过的几本好书，涵盖认知科学、文学、历史和自我成长领域。",
+      "cover": "linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%)",
+      "readingTime": 8,
+      "type": "post"
+    },
+    {
+      "file": "responsive-design.md",
+      "id": "responsive-design",
+      "title": "响应式 Web 设计实战技巧",
+      "date": "2026-06-20",
+      "tags": [
+        "技术",
+        "CSS",
+        "设计"
+      ],
+      "excerpt": "移动优先、流式布局、媒体查询——构建适配所有屏幕的现代网页。",
+      "cover": "linear-gradient(135deg, #c471f5 0%, #fa71cd 100%)",
+      "readingTime": 9,
+      "type": "post"
+    },
+    {
+      "file": "travel-kyoto.md",
+      "id": "travel-kyoto",
+      "title": "京都漫步：在古都寻找时间的痕迹",
+      "date": "2026-06-10",
+      "tags": [
+        "旅行",
+        "随笔"
+      ],
+      "excerpt": "一座城市最动人的不是景点，而是那些不经意间遇见的角落。记录京都之行的点滴。",
+      "cover": "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)",
+      "readingTime": 6,
+      "type": "post"
+    }
+  ]
+}

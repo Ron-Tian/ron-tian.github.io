@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>字由 — 写字的自由</title>
+  <meta name="description" content="一个关于技术、设计、生活与阅读的个人博客">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- 顶部导航 -->
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <a class="site-logo" href="#/" onclick="navigate(''); return false;">
+        字<span class="logo-accent">由</span>
+      </a>
+      <nav class="site-nav" id="siteNav">
+        <a class="nav-link" data-route="" href="#/" onclick="navigate(''); return false;">文章</a>
+        <a class="nav-link" data-route="tag" href="#/tag" onclick="navigate('tag'); return false;">标签</a>
+        <a class="nav-link" data-route="about" href="#/about" onclick="navigate('about'); return false;">关于</a>
+      </nav>
+      <div class="header-search">
+        <span class="search-toggle" id="searchToggle" onclick="toggleSearch()">搜索</span>
+        <div class="search-expand" id="searchExpand">
+          <input type="text" class="search-input" id="searchInput" placeholder="输入关键词...">
+          <span class="search-close" onclick="closeSearch()">×</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 搜索结果浮层 -->
+  <div class="search-results" id="searchResults" style="display:none;"></div>
+
+  <!-- 主内容区 -->
+  <main class="site-main">
+    <div class="content" id="content">
+      <div class="loading">
+        <div class="loading-spinner"></div>
+        <p>加载中...</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p class="footer-logo">字由</p>
+      <p class="footer-desc">写字的自由 · 记录思考与生活</p>
+      <p class="footer-copy">&copy; 2026 字由. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- 阅读进度条 -->
+  <div class="progress-bar" id="progressBar" style="display:none;">
+    <div class="progress-bar-fill" id="progressBarFill"></div>
+  </div>
+
+  <!-- 脚本 -->
+  <script src="js/marked.min.js"></script>
+  <script>
+    if (typeof marked === 'undefined') {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"><\/script>');
+    }
+  </script>
+  <script src="js/post-loader.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
