@@ -14,9 +14,9 @@
    ======================================== */
 const GISCUS_CONFIG = {
   repo: 'Ron-Tian/Ron-Tian.github.io',
-  repoId: '',            // ← 从 giscus.app 获取后填入，如 'R_kgDOLxxxxx'
-  category: 'Comments',  // Discussion 分类名
-  categoryId: '',        // ← 从 giscus.app 获取后填入，如 'DIC_kwDOLxxxxx'
+  repoId: 'R_kgDOTVTDvQ',  // ✅ 已自动获取
+  category: 'Comments',    // Discussion 分类名
+  categoryId: '',          // ← 完成下方第 3 步后填入，如 'DIC_kwDOTVTDvQ'
 };
 
 function loadGiscus(container, term) {
