@@ -125,6 +125,20 @@
       "cover": "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)",
       "readingTime": 6,
       "type": "post"
+    },
+    {
+      "file": "经典语录.md",
+      "id": "经典语录",
+      "title": "经典语录",
+      "date": "2026-07-18",
+      "tags": [
+        "随笔",
+        "感悟"
+      ],
+      "excerpt": "收集一些触动内心的句子——关于傲慢、靠谱、豁达与精神内耗。",
+      "cover": "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+      "readingTime": 2,
+      "type": "post"
     }
   ]
 }
