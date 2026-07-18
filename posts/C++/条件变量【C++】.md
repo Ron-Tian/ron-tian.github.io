@@ -11,29 +11,19 @@ type: post
 
 1、条件变量是一种用于等待的同步机制，可以实现线程间通信，它必须与互斥量配合使用。
 
-
-
 2、boost::thread提供的两种条件变量对象condition_variable、condition_variable_any。
 
 他们的区别是：condition_variable只能配合boost::mutex互斥量；
 
     condition_variable_any可以适应更广泛的互斥量类型。
 
-
-
 3、wait_for(lock_type& lock)函数的执行流程阻塞当前线程，内部自动调用lock.unlock()解锁互斥锁,释放对锁的所有权，当收到其它线程notify_one()或是notify_all()的通知时，再次重新获取互斥锁的使用权（lock.lock()），执行当前线程工作。
-
-
 
 4、wait(lock_type& lock, predicate_type predicate)条件等待函数执行流程
 
 只有在参数2中的predicate返回为false的时候才会阻塞线程，并释放锁，当收到其它线程notify_one()或是notify_all()的通知时并且参数2中的predicate返回为true时才能解除阻塞，并占用锁的使用权。
 
-
-
 5、其它的等待函数是这两个等待函数的拓展，只是加了一个时间点或是时间段。
-
-
 
 6、主要接口
 
@@ -80,7 +70,11 @@ for (auto & th : threads)
 th.join();
 return 0;
 }
+```
+
 6、2 条件等待
+
+```cpp
 #include <iostream>
 #include <boost/thread/condition_variable.hpp>
 #include <boost/thread/mutex.hpp>
@@ -116,9 +110,12 @@ for(int i = 0;i < 5;++i)
 t[i].join();
 t2.join();
 }
-参考：https://www.freesion.com/article/7699987157/
-https://www.jianshu.com/p/e179caefbb0f
 ```
+
+参考：
+
+- https://www.freesion.com/article/7699987157/
+- https://www.jianshu.com/p/e179caefbb0f
 
 ```cpp
 std::deque<int> q;
@@ -128,7 +125,7 @@ std::condition_variable cond;
 void function_1() //生产者
 {
     int count = 10;
-    while (count > 0) 
+    while (count > 0)
     {
         std::unique_lock<std::mutex> locker(mu);
         q.push_front(count);
@@ -142,7 +139,7 @@ void function_1() //生产者
 void function_2() //消费者
 {
     int data = 0;
-    while (data != 1) 
+    while (data != 1)
     {
         std::unique_lock<std::mutex> locker(mu);
         while (q.empty())
@@ -173,4 +170,3 @@ void function_2() //消费者
 在3)与4)间是有空隙的，如果在3)进行后突然此刻加入了一个新的消费者，这个生产者察觉到流水线的变化，对他进行了消费，然后消费者才notify,notify唤醒了原有的消费者，但流水线已经为空了，实际上这就是一个虚假唤醒，唤醒后并无工作可做。
 
 因此不能用if来进行条件判断，加入while就可以避免虚假唤醒，在每次唤醒后先判断流水线条件，这样避免了虚假唤醒的情况。
-

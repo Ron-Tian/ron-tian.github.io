@@ -20,40 +20,40 @@ type: post
 （2）商店记录对商品感兴趣的每个客户电话，这样到货之后，立即进行通知。
 
 ### 3、解决方案
-（1）_<font style="color:rgb(68, 68, 68);">发布者</font>_<font style="color:rgb(68, 68, 68);">（publisher）：拥有一些值得关注的状态的对象</font>
+（1）_发布者_（publisher）：拥有一些值得关注的状态的对象
 
-（2）_<font style="color:rgb(68, 68, 68);">订阅者</font>_<font style="color:rgb(68, 68, 68);">（subscribers）：关注发布者状态变化的其他对象</font>
+（2）_订阅者_（subscribers）：关注发布者状态变化的其他对象
 
-<font style="color:rgb(68, 68, 68);">观察者模式建议你问发布者类添加订阅机制，让每个对象都能订阅或者取消订阅发布者事件流</font>
+观察者模式建议你问发布者类添加订阅机制，让每个对象都能订阅或者取消订阅发布者事件流
 
 <!-- 这是一张图片，ocr 内容为：嘿,请把 我登记上! PUBLISHER SUBSCRIBER - SUBSCRIBERS[ +ADDSUBSCRIBER(SUBSCRIBER) SUBSCRIBER +REMOVESUBSCRIBER(SUBSCRIBER) 我也一样! -->
 ![](https://cdn.nlark.com/yuque/0/2023/png/1443385/1676880857858-54d0b50e-98a8-411d-80f6-dd87e698d173.png)
 
-<font style="color:rgb(68, 68, 68);">机制包括 1） 一个用于存储订阅者对象引用的列表成员变量； 2） 几个用于添加或删除该列表中订阅者的公有方法</font>
+机制包括 1） 一个用于存储订阅者对象引用的列表成员变量； 2） 几个用于添加或删除该列表中订阅者的公有方法
 
-<font style="color:rgb(68, 68, 68);">现在， 无论何时发生了重要的发布者事件， 它都要遍历订阅者并调用其对象的特定通知方法</font>
+现在， 无论何时发生了重要的发布者事件， 它都要遍历订阅者并调用其对象的特定通知方法
 
-<font style="color:rgb(68, 68, 68);">所有订阅者都必须实现同样的接口， 发布者仅通过该接口与订阅者交互。 接口中必须声明通知方法及其参数， 这样发布者在发出通知时还能传递一些上下文数据。</font>
+所有订阅者都必须实现同样的接口， 发布者仅通过该接口与订阅者交互。 接口中必须声明通知方法及其参数， 这样发布者在发出通知时还能传递一些上下文数据。
 
-### <font style="color:rgb(68, 68, 68);">4、观察者模式适合应用场景</font>
-**<font style="color:rgb(68, 68, 68);">当一个对象状态的改变需要改变其他对象</font>****<font style="color:rgb(68, 68, 68);">，</font>****<font style="color:rgb(68, 68, 68);"> </font>****<font style="color:rgb(68, 68, 68);">或实际对象是事先未知的或动态变化的时</font>****<font style="color:rgb(68, 68, 68);">，</font>****<font style="color:rgb(68, 68, 68);"> </font>****<font style="color:rgb(68, 68, 68);">可使用观察者模式</font>****<font style="color:rgb(68, 68, 68);">。</font>**
+### 4、观察者模式适合应用场景
+**当一个对象状态的改变需要改变其他对象**，**或实际对象是事先未知的或动态变化的时**，**可使用观察者模式**。**
 
-<font style="color:rgb(68, 68, 68);"></font><font style="color:rgb(68, 68, 68);">当你使用图形用户界面类时通常会遇到一个问题</font><font style="color:rgb(68, 68, 68);">。</font><font style="color:rgb(68, 68, 68);"> </font><font style="color:rgb(68, 68, 68);">比如</font><font style="color:rgb(68, 68, 68);">，</font><font style="color:rgb(68, 68, 68);"> </font><font style="color:rgb(68, 68, 68);">你创建了自定义按钮类并允许客户端在按钮中注入自定义代码</font><font style="color:rgb(68, 68, 68);">，</font><font style="color:rgb(68, 68, 68);"> </font><font style="color:rgb(68, 68, 68);">这样当用户按下按钮时就会触发这些代码</font><font style="color:rgb(68, 68, 68);">。</font>
+当你使用图形用户界面类时通常会遇到一个问题。比如，你创建了自定义按钮类并允许客户端在按钮中注入自定义代码，这样当用户按下按钮时就会触发这些代码。
 
-<font style="color:rgb(68, 68, 68);">观察者模式允许任何实现了订阅者接口的对象订阅发布者对象的事件通知。 你可在按钮中添加订阅机制， 允许客户端通过自定义订阅类注入自定义代码。</font>
+观察者模式允许任何实现了订阅者接口的对象订阅发布者对象的事件通知。 你可在按钮中添加订阅机制， 允许客户端通过自定义订阅类注入自定义代码。
 
-**<font style="color:rgb(68, 68, 68);">当应用中的一些对象必须观察其他对象时</font>****<font style="color:rgb(68, 68, 68);">，</font>****<font style="color:rgb(68, 68, 68);"> </font>****<font style="color:rgb(68, 68, 68);">可使用该模式</font>****<font style="color:rgb(68, 68, 68);">。</font>****<font style="color:rgb(68, 68, 68);"> </font>****<font style="color:rgb(68, 68, 68);">但仅能在有限时间内或特定情况下使用</font>****<font style="color:rgb(68, 68, 68);">。</font>**
+**当应用中的一些对象必须观察其他对象时**，**可使用该模式**。**但仅能在有限时间内或特定情况下使用**。**
 
-<font style="color:rgb(68, 68, 68);">订阅列表是动态的， 因此订阅者可随时加入或离开该列表。</font>
+订阅列表是动态的， 因此订阅者可随时加入或离开该列表。
 
-### <font style="color:rgb(68, 68, 68);">5、观察者模式优缺点</font>
-_<font style="color:rgb(68, 68, 68);">开闭原则</font>_<font style="color:rgb(68, 68, 68);">。 你无需修改发布者代码就能引入新的订阅者类 （如果是发布者接口则可轻松引入发布者类）。</font>
+### 5、观察者模式优缺点
+_开闭原则_。 你无需修改发布者代码就能引入新的订阅者类 （如果是发布者接口则可轻松引入发布者类）。
 
-<font style="color:rgb(68, 68, 68);">你可以在运行时建立对象之间的联系。</font>
+你可以在运行时建立对象之间的联系。
 
-<font style="color:rgb(68, 68, 68);">订阅者的通知顺序是随机的。</font>
+订阅者的通知顺序是随机的。
 
-### <font style="color:rgb(68, 68, 68);">6、C++ 实现方式</font>
+### 6、C++ 实现方式
 ```cpp
 #include <iostream>
 #include <list>
@@ -163,7 +163,6 @@ private:
 
 int Observer::static_number_ = 0;
 
-
 void ClientCode()
 {
     Subject* subject = new Subject;
@@ -202,4 +201,3 @@ int main()
     return 0;
 }
 ```
-

@@ -50,7 +50,6 @@ QPushButton* standardButton(int btnType);
 void setCenterWidget(QWidget* w);
 enDialogCode run();
 
-
 signals:
 void signalAccept();
 void signalReject();
@@ -91,8 +90,6 @@ enDialogType m_currentType;
 };
 ```
 
-
-
 ```cpp
 #include "dialog.h"
 #include "macrofunc.h"
@@ -115,8 +112,8 @@ DialogWidget::DialogWidget(QWidget* parent /*= nullptr*/)
         #else
         setWindowFlags(Qt::FramelessWindowHint);
         #endif
-        
-        
+
+
         setAcceptDrops(true);
         //setAttribute(Qt::WA_TranslucentBackground, true);
         setContextMenuPolicy(Qt::NoContextMenu);
@@ -128,7 +125,7 @@ DialogWidget::DialogWidget(QWidget* parent /*= nullptr*/)
         connect(m_pRejectBtn, &QPushButton::clicked, this, &DialogWidget::slotReject);
         connect(m_pCancelBtn, &QPushButton::clicked, this, &DialogWidget::slotCancel);
         connect(m_pTitileBar, &TitleBar::signalButtonCloseClicked, this, &DialogWidget::slotCancel);
-        
+
     }
 
 DialogWidget::~DialogWidget()
@@ -140,42 +137,42 @@ void DialogWidget::init()
     m_HLayoutBottom = new QHBoxLayout;
     m_VLayoutMain = new QVBoxLayout;
     m_VLayoutCenter = new QVBoxLayout;
-    
+
     m_pBottomWidget = new QWidget;
     m_pBottomWidget->setObjectName(tr("dialogBottom"));
     m_pCenterWidget = new QWidget;
     m_pCenterWidget->setObjectName(tr("dialogCenter"));
-    
+
     m_pTipLabel = new QLabel(zhToolTipInformation);
     m_pTipLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     m_pTipLabel->setContentsMargins(10, 15, 10, 15);
     m_pTipLabel->setObjectName(tr("dialogTipLabel"));
-    
+
     m_pTitileBar = new TitleBar(this);
     m_pTitileBar->setContextMenuPolicy(Qt::NoContextMenu);
-    
+
     m_pTitileBar->setVisibleMinBtn(false);
     m_pTitileBar->setVisibleMaxBtn(false);
     m_pTitileBar->setVisibleResumeBtn(false);
     m_pTitileBar->setVisibleColseBtn(false);
     m_pTitileBar->setEnabledDoubleClicked(false);
-    
+
     m_pTitileBar->setObjectName(tr("dialogTitle"));
-    
+
     m_pAcceptBtn = new QPushButton(zhFixAct);
     m_pAcceptBtn->setObjectName(tr("dialogAcceptBtn"));
     m_pRejectBtn = new QPushButton(zhRefuseAct);
     m_pRejectBtn->setObjectName(tr("dialogRejectBtn"));
     m_pCancelBtn = new QPushButton(zhCancelAct);
     m_pCancelBtn->setObjectName(tr("dialogCancelBtn"));
-    
-    
+
+
     m_pBottomLeftSpacer = new QLabel();
     m_pBottomCenterSpacer = new QLabel();
-    
+
     LOAD_STYLESHEET_ARG(m_pBottomLeftSpacer, "dialog.qss");
     LOAD_STYLESHEET_ARG(m_pBottomCenterSpacer, "dialog.qss");
-    
+
     m_pBottomLeftSpacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
     m_pBottomCenterSpacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
     m_pBottomCenterSpacer->setMaximumHeight(2);
@@ -184,7 +181,7 @@ void DialogWidget::init()
     m_pCenterWidget->setLayout(m_VLayoutCenter);
     m_VLayoutCenter->setContentsMargins(0, 0, 0, 0);
     m_pCenterWidget->setContentsMargins(0, 0, 0, 0);
-    
+
     m_HLayoutBottom->addWidget(m_pBottomLeftSpacer);
     m_HLayoutBottom->addWidget(m_pBottomCenterSpacer);
     m_HLayoutBottom->addWidget(m_pAcceptBtn);
@@ -227,7 +224,6 @@ void DialogWidget::setRejctVisible(bool visible)
         m_pBottomLeftSpacer->hide();
     }
 }
-
 
 void DialogWidget::setCancelVisible(bool visible)
 {
@@ -284,7 +280,7 @@ void DialogWidget::slotReject()
     if (m_currentType != enCritical)
     {
         close();
-    }   
+    }
 }
 
 void DialogWidget::slotCancel()
@@ -363,7 +359,7 @@ void DialogWidget::setStandardButtons(int btnType)
     }
     else if (btnType == (DialogWidget::AcceptBtn | DialogWidget::RejectBtn | DialogWidget::CancelBtn))
     {
-        
+
     }
     else if (btnType == DialogWidget::NoBtn)
     {
@@ -381,7 +377,7 @@ void DialogWidget::setInfor(const QString& text, Qt::Alignment alignment)
 }
 
 /**
-* @brief 返回一个按钮，如果参数是多个按钮的组合则返回AcceptButton 
+* @brief 返回一个按钮，如果参数是多个按钮的组合则返回AcceptButton
 */
 QPushButton* DialogWidget::standardButton(int btnType)
 {
@@ -414,8 +410,6 @@ DialogWidget::enDialogCode DialogWidget::run()
     return m_currentCode;
 }
 ```
-
-
 
 ```cpp
 #pragma once
@@ -535,8 +529,6 @@ bool m_isForbidMove;
 bool m_bEnableDoubleClicked;
 };
 ```
-
-
 
 ```cpp
 /*!
@@ -810,8 +802,6 @@ m_pTitleLabel->hide();
 m_pTitleLabel->show();
 #endif
 
-
-
 //     m_pIcon->setObjectName("TitleIcon");
 //     m_pTitleContent->setObjectName("TitleContent");
 m_pButtonMin->setObjectName("ButtonMin");
@@ -883,8 +873,6 @@ painter.drawPrimitive(QStyle::PE_Widget, opt);
 QWidget::paintEvent(event);
 }
 
-
-
 void TitleBar::changeEvent(QEvent* e)
 {
 QWidget::changeEvent(e);
@@ -905,4 +893,3 @@ if (m_pButtonMax)m_pButtonMax->setToolTip(zhMaxAct);
 if (m_pButtonClose)m_pButtonClose->setToolTip(zhCloseAct);
 }
 ```
-

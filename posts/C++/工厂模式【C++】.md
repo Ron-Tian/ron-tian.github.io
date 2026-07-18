@@ -9,36 +9,36 @@ readingTime: 7
 type: post
 ---
 
-## <font style="color:#333333;">1、简单工厂模式</font>
-**<font style="color:#333333;">a</font>****<font style="color:#333333;">、概述</font>**
+## 1、简单工厂模式
+**a**、概述**
 
-<font style="color:#333333;">简单工厂模式（</font><font style="color:#333333;">Simple Factory Pattern</font><font style="color:#333333;">）又叫做静态工厂方法模式（</font><font style="color:#333333;">Static Factory Method Pattern</font><font style="color:#333333;">），属于创建型模式。简单工厂模式的实质是由一个工厂类</font><font style="color:#333333;background-color:#FF0000;">根据传入的参数，动态决定应该创建哪一个产品类的实例</font><font style="color:#333333;">。</font>
+简单工厂模式（Simple Factory Pattern）又叫做静态工厂方法模式（Static Factory Method Pattern），属于创建型模式。简单工厂模式的实质是由一个工厂类根据传入的参数，动态决定应该创建哪一个产品类的实例。
 
-**<font style="color:#333333;">b</font>****<font style="color:#333333;">、模式结构</font>**
+**b**、模式结构**
 
-<font style="color:#333333;">工厂（</font><font style="color:#333333;">Factory</font><font style="color:#333333;">）：整个模式的核心，负责实现创建所有实例的内部逻辑。 </font>
+工厂（Factory）：整个模式的核心，负责实现创建所有实例的内部逻辑。
 
-<font style="color:#333333;">抽象产品（</font><font style="color:#333333;">Product</font><font style="color:#333333;">）：所有具体产品的父类，负责描述所有实例所共有的公共接口。 </font>
+抽象产品（Product）：所有具体产品的父类，负责描述所有实例所共有的公共接口。
 
-<font style="color:#333333;">具体产品（</font><font style="color:#333333;">ConcreteProduct</font><font style="color:#333333;">）：最终创建的具体产品 </font>
+具体产品（ConcreteProduct）：最终创建的具体产品
 
-**<font style="color:#333333;">c</font>****<font style="color:#333333;">、优缺点</font>**
+**c**、优缺点**
 
-<font style="color:#333333;">优点：</font>
+优点：
 
-<font style="color:#333333;">工厂类包含了必要的逻辑判断，根据指定的信息来创建对应的产品。客户端仅负责</font><font style="color:#333333;">“</font><font style="color:#333333;">消费</font><font style="color:#333333;">”</font><font style="color:#333333;">产品即可，实现了对象创建和使用的分离，客户端无需关心具体产品如何创建与组织，仅需知道具体产品所对应的参数即可，可以在一定程度减少使用者的记忆量 </font>
+工厂类包含了必要的逻辑判断，根据指定的信息来创建对应的产品。客户端仅负责“消费”产品即可，实现了对象创建和使用的分离，客户端无需关心具体产品如何创建与组织，仅需知道具体产品所对应的参数即可，可以在一定程度减少使用者的记忆量
 
-<font style="color:#333333;">缺点：</font>
+缺点：
 
-<font style="color:#333333;">于工厂类集中了所有产品的创建逻辑（违反了高内聚责任分配原则），职责过重，一旦无法正常工作，整个系统都将受到影响；一旦添加新产品就不得不修改工厂逻辑，在产品类型较多时，有可能造成工厂逻辑过于复杂，不利于系统的扩展和维护。</font>
+于工厂类集中了所有产品的创建逻辑（违反了高内聚责任分配原则），职责过重，一旦无法正常工作，整个系统都将受到影响；一旦添加新产品就不得不修改工厂逻辑，在产品类型较多时，有可能造成工厂逻辑过于复杂，不利于系统的扩展和维护。
 
-**<font style="color:#333333;">d</font>****<font style="color:#333333;">、适用场景</font>**
+**d**、适用场景**
 
-<font style="color:#333333;">工厂类负责创建的对象比较少（不会造成工厂方法中的业务逻辑太过复杂）；客户端仅需知道传入工厂类的参数，对于如何创建对象（逻辑）不关心。 </font>
+工厂类负责创建的对象比较少（不会造成工厂方法中的业务逻辑太过复杂）；客户端仅需知道传入工厂类的参数，对于如何创建对象（逻辑）不关心。
 
-**<font style="color:#333333;">e</font>****<font style="color:#333333;">、</font>****<font style="color:#333333;">EG</font>****<font style="color:#333333;">分析</font>**
+**e**、**EG**分析**
 
-<font style="color:#333333;">以生产汽车为例子：创建抽象产品</font>
+以生产汽车为例子：创建抽象产品
 
 ```cpp
 //汽车产品
@@ -64,7 +64,7 @@ class BmwCar : public Car
 public:
 	string Name()
 	{
-		retutn "BmwCar";
+		retutn "BmwCar"; // [拼写修正] retutn → return
 	}
 }
 //奥迪
@@ -120,28 +120,28 @@ int main()
 
 ```
 
-## <font style="color:#333333;">2、工厂方法模式</font>
-**<font style="color:#333333;">a</font>****<font style="color:#333333;">、简述</font>**
+## 2、工厂方法模式
+**a**、简述**
 
-<font style="color:#333333;">工厂方法模式（</font><font style="color:#333333;">Factory Method Pattern</font><font style="color:#333333;">）是一种常用的对象创建型设计模式，此模式的核心思想是封装类中不变的部分，提取其中个性化善变的部分为独立类，通过依赖注入以达到解耦、复用以及方便后期维护拓展的目的。 </font>
+工厂方法模式（Factory Method Pattern）是一种常用的对象创建型设计模式，此模式的核心思想是封装类中不变的部分，提取其中个性化善变的部分为独立类，通过依赖注入以达到解耦、复用以及方便后期维护拓展的目的。
 
-**<font style="color:#333333;">b</font>****<font style="color:#333333;">、模式结构</font>**
+**b**、模式结构**
 
-<font style="color:#333333;">Factory</font><font style="color:#333333;">（抽象工厂）：是工厂方法模式的核心，与应用程序无关。任何在模式中创建的对象的工厂类必须实现这个接口。</font><font style="color:#333333;">ConcreteFactory</font><font style="color:#333333;">（具体工厂）：实现抽象工厂接口的具体工厂类，包含与应用程序密切相关的逻辑，并且被应用程序调用以创建产品对象。</font><font style="color:#333333;">Product</font><font style="color:#333333;">（抽象产品）：所创建对象的基类，也就是具体产品的共同父类或共同拥有的接口。</font>
+Factory（抽象工厂）：是工厂方法模式的核心，与应用程序无关。任何在模式中创建的对象的工厂类必须实现这个接口。ConcreteFactory（具体工厂）：实现抽象工厂接口的具体工厂类，包含与应用程序密切相关的逻辑，并且被应用程序调用以创建产品对象。Product（抽象产品）：所创建对象的基类，也就是具体产品的共同父类或共同拥有的接口。
 
-<font style="color:#333333;">ConcreteProduct</font><font style="color:#333333;">（具体产品）：实现了抽象产品角色所定义的接口。某具体产品有专门的具体工厂创建，它们之间往往一一对应。</font>
+ConcreteProduct（具体产品）：实现了抽象产品角色所定义的接口。某具体产品有专门的具体工厂创建，它们之间往往一一对应。
 
-**<font style="color:#333333;">c</font>****<font style="color:#333333;">、优缺点</font>**
+**c**、优缺点**
 
-<font style="color:#333333;">优点：克服了简单工厂模式违背开放</font><font style="color:#333333;">-</font><font style="color:#333333;">封闭原则的缺点，又保留了封装对象创建过程的优点，降低客户端和工厂的耦合性。所以说，</font><font style="color:#333333;">“</font><font style="color:#333333;">工厂方法模式</font><font style="color:#333333;">”</font><font style="color:#333333;">是</font><font style="color:#333333;">“</font><font style="color:#333333;">简单工厂模式</font><font style="color:#333333;">”</font><font style="color:#333333;">的进一步抽象和推广。</font>
+优点：克服了简单工厂模式违背开放-封闭原则的缺点，又保留了封装对象创建过程的优点，降低客户端和工厂的耦合性。所以说，“工厂方法模式”是“简单工厂模式”的进一步抽象和推广。
 
-<font style="color:#333333;">缺点：每增加一个产品，相应的也要增加一个子工厂，加大了额外的开发量。</font>
+缺点：每增加一个产品，相应的也要增加一个子工厂，加大了额外的开发量。
 
-**<font style="color:#333333;">d</font>****<font style="color:#333333;">、适用场景</font>**
+**d**、适用场景**
 
-<font style="color:#333333;">对于某个产品，调用者清楚地知道应该使用哪个具体工厂服务，实例化该具体工厂，生产出具体的产品来，只是需要一种产品，而不想知道也不需要知道究竟是哪个工厂生产的，即最终选用哪个具体工厂的决定权在生产者一方，它们根据当前系统的情况来实例化一个具体的工厂返回给使用者，而这个决策过程对于使用者来说是透明的。</font>
+对于某个产品，调用者清楚地知道应该使用哪个具体工厂服务，实例化该具体工厂，生产出具体的产品来，只是需要一种产品，而不想知道也不需要知道究竟是哪个工厂生产的，即最终选用哪个具体工厂的决定权在生产者一方，它们根据当前系统的情况来实例化一个具体的工厂返回给使用者，而这个决策过程对于使用者来说是透明的。
 
-**<font style="color:#333333;">e、EG分析</font>**
+**e、EG分析**
 
 ```cpp
 //创建抽象产品
@@ -209,7 +209,7 @@ public:
 class AudFactory : public AFactory
 {
 public:
-	Car* CtrateCar()
+	Car* CtrateCar() // [拼写修正] CtrateCar → CreateCar
 	{
 		return new AudCar();
 	}
@@ -228,32 +228,32 @@ int main()
 }
 ```
 
-## <font style="color:#333333;">3、抽象工厂模式</font>
-**<font style="color:#333333;">a</font>****<font style="color:#333333;">、简述</font>**
+## 3、抽象工厂模式
+**a**、简述**
 
-<font style="color:#333333;">抽象工厂模式（</font><font style="color:#333333;">Abstract Factory Pattern</font><font style="color:#333333;">）是所有形态的工厂模式中最为抽象和最具一般性的一种形态。抽象工厂模式是指当有多个抽象角色时，使用的一种工厂模式。抽象工厂模式可以向客户端提供一个接口，使客户端在不必指定产品的具体的情况下，创建多个产品族中的产品对象。 </font>
+抽象工厂模式（Abstract Factory Pattern）是所有形态的工厂模式中最为抽象和最具一般性的一种形态。抽象工厂模式是指当有多个抽象角色时，使用的一种工厂模式。抽象工厂模式可以向客户端提供一个接口，使客户端在不必指定产品的具体的情况下，创建多个产品族中的产品对象。
 
-**<font style="color:#333333;">b</font>****<font style="color:#333333;">、模式结构</font>**
+**b**、模式结构**
 
-<font style="color:#333333;">Factory</font><font style="color:#333333;">（抽象工厂）：声明一个用于创建抽象产品的接口</font>
+Factory（抽象工厂）：声明一个用于创建抽象产品的接口
 
-<font style="color:#333333;">ConcreteFactory</font><font style="color:#333333;">（具体工厂）：用于创建具体的产品</font>
+ConcreteFactory（具体工厂）：用于创建具体的产品
 
-<font style="color:#333333;">Product</font><font style="color:#333333;">（抽象产品）：声明一个产品对象类型的接口</font>
+Product（抽象产品）：声明一个产品对象类型的接口
 
-<font style="color:#333333;">ConcreteProduct</font><font style="color:#333333;">（具体产品）：由具体工厂创建的具体产品</font>
+ConcreteProduct（具体产品）：由具体工厂创建的具体产品
 
-**<font style="color:#333333;">c</font>****<font style="color:#333333;">、优缺点</font>**
+**c**、优缺点**
 
-<font style="color:#333333;">优点：封装了产品的创建，使得不需要知道具体是哪种产品，只需要知道是哪个工厂即可。可以支持不同类型的产品，使得模式灵活性更强。可以非常方便的使用一族中的不同类型的产品。</font>
+优点：封装了产品的创建，使得不需要知道具体是哪种产品，只需要知道是哪个工厂即可。可以支持不同类型的产品，使得模式灵活性更强。可以非常方便的使用一族中的不同类型的产品。
 
-<font style="color:#333333;">缺点：</font><font style="color:#333333;">结构过于臃肿，如果产品类型较多或产品族较多，会非常难于管理。每次如果添加一组产品，那么所有的工厂类都必须添加一个方法，这样违背了开放</font><font style="color:#333333;">-</font><font style="color:#333333;">封闭原则。所以一般适用于产品组合产品族变化不大的情况。</font>
+缺点：结构过于臃肿，如果产品类型较多或产品族较多，会非常难于管理。每次如果添加一组产品，那么所有的工厂类都必须添加一个方法，这样违背了开放-封闭原则。所以一般适用于产品组合产品族变化不大的情况。
 
-**<font style="color:#333333;">d</font>****<font style="color:#333333;">、适用场景</font>**
+**d**、适用场景**
 
-<font style="color:#333333;">在不必指定产品的具体的情况下，创建多个产品族中的产品对象。</font>
+在不必指定产品的具体的情况下，创建多个产品族中的产品对象。
 
-**<font style="color:#333333;">e</font>****<font style="color:#333333;">、</font>****<font style="color:#333333;">EG</font>****<font style="color:#333333;">分析</font>**
+**e**、**EG**分析**
 
 ```cpp
 //创建抽象产品
@@ -262,6 +262,7 @@ clsaa Car
   public:
 	  virtual string Name() = 0;     //汽车名称
 }
+// [拼写修正] clsaa → class
 class Bike
 {
 public:
@@ -269,7 +270,7 @@ public:
 }
 //创建具体产品
 
-/********** 汽车 **********/
+/** 汽车 **/
 //奔驰
 class BenzCar : public Car
 {
@@ -297,7 +298,7 @@ public:
 		return "BmwCar";
 	}
 }
-/********** 自行车 **********/
+/** 自行车 **/
 // 奔驰
 class BenzBike : public IBike
 {
@@ -423,11 +424,11 @@ int main()
 	有多个产品类，工厂类根据传入参数的不同，动态决定实例化那个工厂类（在工厂类做判断，从而创建相应的产品，当增加产品时需要修改工厂类。）
 		#include<iostream>
 		using namespace std;
-		
+
 		class Product
 		{
 		public:
-		    virtual void show() = 0;  
+		    virtual void show() = 0;
 		};
 		class Product_A : public Product
 		{
@@ -463,7 +464,7 @@ int main()
 		        }
 		    }
 		};
-		
+
 		int main()
 		{
 		    Factory *factory = new Factory();
@@ -478,9 +479,9 @@ int main()
 		#include <stdlib.h>
 		#include <string>
 		using namespace std;
-		 
+
 		//工厂方法模式
-		 
+
 		//抽象类(多态:提高基类)
 		class car{
 		public:
@@ -513,7 +514,7 @@ int main()
 		public:
 		    virtual car* createSpecificCar()=0;
 		};
-		 
+
 		//工厂类子类
 		class bencifactory:public carfactory{
 		    car* createSpecificCar(){
@@ -526,7 +527,7 @@ int main()
 		        return (new baomacar());
 		    }
 		};
-		 
+
 		int main(){
 		    carfactory *producecar1 = new bencifactory();
 		    car *newcar1 = producecar1->createSpecificCar();
@@ -601,7 +602,7 @@ int main()
 		    virtual car* createSpecificCar()=0;
 		    virtual highcar* createSpecificHightCar()=0;
 		};
-		 
+
 		//工厂类子类
 		class bencifactory:public carfactory{
 		    car* createSpecificCar(){
@@ -631,5 +632,3 @@ int main()
 		}
 
 ```
-
-## 

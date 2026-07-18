@@ -30,11 +30,10 @@ void Start();
 void ReAssignLightestThreadId();
 
 template<class Fun, class... Args>
-int Call(int threadid, Fun fun, Args... args) 
+int Call(int threadid, Fun fun, Args... args)
 {
     if (threadid < ANY_THREAD_ID)
         return -1;
-
 
     if (threadid == ANY_THREAD_ID)
         threadid = lightest_threadid_;
@@ -62,7 +61,7 @@ int RegisterTimer(int threadid, time_t seconds_after, Fun fun, Args... args) {
     ThreadItem::Fun bind_fun = std::bind(fun, args...);
     size_t fun_nums = threads_[threadid]->RegisterTimer(bind_fun, seconds_after);
     return threadid;
-}   
+}
 protected:
 ThreadPool(int thread_num);
 ~ThreadPool() = default;
@@ -93,7 +92,7 @@ namespace thread_pool {
         }
         return instan_;
     }
-    void ThreadPool::Destroy() 
+    void ThreadPool::Destroy()
     {
         if (instan_)
             delete instan_;
@@ -107,14 +106,14 @@ namespace thread_pool {
         if (thread_num_ < 1 || thread_num_ > 1000)
             thread_num_ = 8;
 
-        for (int i = 0; i < thread_num_; i++) 
+        for (int i = 0; i < thread_num_; i++)
         {
             threads_[i] = std::make_shared<ThreadItem>();
             threads_[i]->Start();
         }
         start_ = true;
     }
-    ThreadPool::ThreadPool(int thread_num) 
+    ThreadPool::ThreadPool(int thread_num)
     {
         if (thread_num < 1 || thread_num > 1000)
             thread_num = 8;
@@ -133,7 +132,6 @@ namespace thread_pool {
     }
 } // namespace thread_pool
 
-
 ```
 
 ```cpp
@@ -149,10 +147,10 @@ namespace thread_pool {
 
 namespace thread_pool {
 
-    class ThreadItem 
+    class ThreadItem
     {
     public:
-        struct WorkCallStep 
+        struct WorkCallStep
         {
             virtual void ThreadStep() = 0;
         };
@@ -228,7 +226,6 @@ namespace thread_pool {
     size_t ThreadItem::RegisterTimer(Fun fun, size_t seconds_after) {
         return AddTimer(fun, seconds_after);
     }
-
 
     size_t ThreadItem::AddTimer(Fun fun, size_t seconds_after) {
         std::lock_guard<std::mutex> timer_lock(timer_lock_);
@@ -325,4 +322,3 @@ namespace thread_pool {
     }
 } // namespace thread_pool
 ```
-

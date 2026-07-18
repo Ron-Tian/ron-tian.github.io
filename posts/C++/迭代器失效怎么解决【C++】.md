@@ -9,8 +9,8 @@ readingTime: 1
 type: post
 ---
 
-<font style="color:rgb(38, 38, 38);background-color:rgb(232, 247, 207);">（1）序列式容器（数组式容器如array、vector、queue）： 使用erase方法可以返回下一个有效的iterator </font>  
-<font style="color:rgb(38, 38, 38);background-color:rgb(232, 247, 207);"> // 序列式容器</font>
+（1）序列式容器（数组式容器如array、vector、queue）： 使用erase方法可以返回下一个有效的iterator
+ // 序列式容器
 
 ```cpp
  vector<int> vecTemp = {1,2,3};
@@ -23,8 +23,8 @@ type: post
  }
 ```
 
-<font style="color:rgb(38, 38, 38);background-color:rgb(232, 247, 207);">（2）关联式容器：使用erase方法可以返回下一个有效的iterator或者删除之后再次++</font>  
-<font style="color:rgb(38, 38, 38);background-color:rgb(232, 247, 207);"> // 关联式容器</font>
+（2）关联式容器：使用erase方法可以返回下一个有效的iterator或者删除之后再次++
+ // 关联式容器
 
 ```cpp
  map<int, int> mapTemp = { {1,1},{2,2 },{3,3} };
@@ -37,7 +37,3 @@ type: post
  	}
  }
 ```
-
-  
-
-

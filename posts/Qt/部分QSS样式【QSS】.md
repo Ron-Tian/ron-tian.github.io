@@ -75,7 +75,7 @@ padding-left: 10px;
 background: transparent;
 }
 
-/垂直滚动条/
+/* 垂直滚动条 */
 QScrollBar:vertical
 {
 background: #2c2c2c;
@@ -83,7 +83,7 @@ width:8px;
 margin: 0px 0px 0px 0;
 }
 
-/滚动条中滑块的样式/
+/* 滚动条中滑块的样式 */
 QScrollBar::handle
 {
 background: #83878E;
@@ -94,23 +94,23 @@ min-height:20px;
 */
 }
 
-/设置下箭头/
+/* 设置下箭头 */
 QScrollBar::add-line:vertical
 {
 border: 0px;
 height: 0px;
-/width:10px;/
+/* width:10px; */
 }
 
-/设置上箭头/
+/* 设置上箭头 */
 QScrollBar::sub-line:vertical
 {
 border: 0px;
 height: 0px;
-/ width:10px; /
+/* width:10px; */
 }
 
-/当滚动条滚动的时候，上面的部分和下面的部分/
+/* 当滚动条滚动的时候，上面的部分和下面的部分 */
 QScrollBar::add-page,QScrollBar::sub-page
 {
 background:#323742;
@@ -118,7 +118,7 @@ background:#323742;
 border-radius:4px; */
 }
 
-/ 水平滚动条 /
+/* 水平滚动条 */
 QScrollBar:horizontal
 {
 border: 0px;
@@ -141,7 +141,7 @@ width: 0px;
 
 QListView{
 border:0px;
-/ border-top:1px solid #0C0E10;; /
+/* border-top:1px solid #0C0E10;; */
 }
 
 QListView::item{
@@ -157,9 +157,9 @@ color:#FFFFFF;
 background: #4D4D4D;
 }
 
-/编辑输出的样式只有放到这里才能在对话框中有效/
+/* 编辑输出的样式只有放到这里才能在对话框中有效 */
 
-/ 舞台的背景 /
+/* 舞台的背景 */
 
 QWidget#kStageBase{
 background: #090909;
@@ -185,7 +185,7 @@ font-size: 14px;
 font-family: "MicrosoftYaHei";
 }
 
-/  X，Y，宽度，高度，旋转角度的QSpinBox控件的样式 /
+/* X，Y，宽度，高度，旋转角度的QSpinBox控件的样式 */
 QSpinBox{
 height:22px;
 width:40px;
@@ -200,15 +200,15 @@ selection-background-color: #AC4A01;
 QSpinBox::up-button
 {
 border: 0px;
-image: url(:/img/Resources/image/up_arrow.png);	
-/background: #161616; /
+image: url(:/img/Resources/image/up_arrow.png);
+/* background: #161616; */
 border-radius: 1px;
 height: 11px;
 }
 QSpinBox::down-button{
 border: 0px;
 image: url(:/img/Resources/image/down_arrow.png);
-/background: #161616;/
+/* background: #161616; */
 border-radius: 1px;
 height: 11px;
 }
@@ -324,8 +324,4 @@ background:transparent;
 QLabel#m_pBottomCenterSpacer{
 background:transparent;
 }
-
-
-
 ```
-
