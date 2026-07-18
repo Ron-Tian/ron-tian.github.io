@@ -1,0 +1,10 @@
+---
+id: pdf-url-to-page
+title: "从浏览器输入 URL 到看到页面发生了什么"
+date: 2026-07-18
+tags: 网络,前端
+excerpt: "经典面试题深度解析：DNS 解析、TCP 连接、HTTP 请求、服务器响应、浏览器渲染全流程。"
+cover: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)
+readingTime: 20
+type: post
+---

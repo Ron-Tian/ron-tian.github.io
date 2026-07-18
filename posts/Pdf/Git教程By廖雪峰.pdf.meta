@@ -1,0 +1,10 @@
+---
+id: pdf-git-tutorial
+title: "Git 教程（廖雪峰）"
+date: 2026-07-18
+tags: Git,教程
+excerpt: "廖雪峰 Git 教程，从零开始掌握 Git 版本控制：仓库、分支、标签、远程协作等核心操作。"
+cover: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)
+readingTime: 45
+type: post
+---

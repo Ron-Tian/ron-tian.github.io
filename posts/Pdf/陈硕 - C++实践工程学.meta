@@ -1,0 +1,10 @@
+---
+id: pdf-cpp-engineering
+title: "C++ 实践工程学（陈硕）"
+date: 2026-07-18
+tags: C++,工程实践
+excerpt: "陈硕关于 C++ 工程实践的深度思考：代码质量、项目架构、并发编程、网络编程等工程化话题。"
+cover: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%)
+readingTime: 60
+type: post
+---

@@ -1,0 +1,10 @@
+---
+id: pdf-cpp-performance
+title: "提高 C++ 性能的编程技术"
+date: 2026-07-18
+tags: C++,性能优化
+excerpt: "C++ 性能优化实战指南：对象创建、临时对象、内联、内存池、多线程优化等高性能编程技巧。"
+cover: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)
+readingTime: 90
+type: post
+---

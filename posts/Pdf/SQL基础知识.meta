@@ -1,0 +1,10 @@
+---
+id: pdf-sql-basics
+title: "SQL 基础知识"
+date: 2026-07-18
+tags: SQL,数据库
+excerpt: "SQL 基础教程：数据查询、过滤、排序、聚合、连接、子查询及表操作等核心语法。"
+cover: linear-gradient(135deg, #fa709a 0%, #fee140 100%)
+readingTime: 30
+type: post
+---

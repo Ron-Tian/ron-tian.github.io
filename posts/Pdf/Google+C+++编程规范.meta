@@ -1,0 +1,10 @@
+---
+id: pdf-google-cpp-style
+title: "Google C++ 编程规范"
+date: 2026-07-18
+tags: C++,编程规范
+excerpt: "Google C++ 编码规范指南，涵盖头文件、作用域、命名、类设计、格式等工程实践标准。"
+cover: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)
+readingTime: 40
+type: post
+---

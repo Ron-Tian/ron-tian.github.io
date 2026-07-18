@@ -1,0 +1,10 @@
+---
+id: pdf-memory-analysis
+title: "内存原理与分析"
+date: 2026-07-18
+tags: C++,内存管理
+excerpt: "深入剖析计算机内存工作原理、内存布局、堆栈机制及内存分析技术。"
+cover: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%)
+readingTime: 30
+type: post
+---

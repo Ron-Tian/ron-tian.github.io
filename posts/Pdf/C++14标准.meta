@@ -1,0 +1,10 @@
+---
+id: pdf-cpp14-standard
+title: "C++14 标准"
+date: 2026-07-18
+tags: C++,标准
+excerpt: "C++14 标准文档，涵盖泛型 lambda、返回类型推导、二进制字面量、std::make_unique 等新特性。"
+cover: linear-gradient(135deg, #667eea 0%, #764ba2 100%)
+readingTime: 60
+type: post
+---

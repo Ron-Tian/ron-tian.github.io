@@ -271,128 +271,7 @@
       "format": "md"
     },
     {
-      "file": "git-workflow.md",
-      "id": "git-workflow",
-      "title": "Git 工作流最佳实践",
-      "date": "2026-06-01",
-      "tags": [
-        "技术",
-        "Git"
-      ],
-      "excerpt": "从 commit 规范到分支策略，打造高效的团队协作 Git 工作流。",
-      "cover": "linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%)",
-      "readingTime": 11,
-      "type": "post",
-      "format": "md"
-    },
-    {
-      "file": "hello-world.md",
-      "id": "hello-world",
-      "title": "你好，世界 — 我的博客启程",
-      "date": "2026-07-15",
-      "tags": [
-        "随笔",
-        "公告"
-      ],
-      "excerpt": "每一段旅程都始于第一步。这是我的第一篇博文，记录下搭建这个博客的初心与思考。",
-      "cover": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-      "readingTime": 5,
-      "type": "post",
-      "format": "md"
-    },
-    {
-      "file": "javascript-async.md",
-      "id": "javascript-async",
-      "title": "深入理解 JavaScript 异步编程",
-      "date": "2026-07-03",
-      "tags": [
-        "技术",
-        "JavaScript"
-      ],
-      "excerpt": "从回调到 Promise 再到 async/await，梳理 JavaScript 异步编程的演进脉络和最佳实践。",
-      "cover": "linear-gradient(135deg, #f6d365 0%, #fda085 100%)",
-      "readingTime": 12,
-      "type": "post",
-      "format": "md"
-    },
-    {
-      "file": "markdown-guide.md",
-      "id": "markdown-guide",
-      "title": "Markdown 完全指南：从入门到精通",
-      "date": "2026-07-12",
-      "tags": [
-        "技术",
-        "Markdown"
-      ],
-      "excerpt": "Markdown 是一种轻量级标记语言，让你专注于内容而非排版。本文全面介绍 Markdown 语法。",
-      "cover": "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-      "readingTime": 10,
-      "type": "post",
-      "format": "md"
-    },
-    {
-      "file": "minimalist-design.md",
-      "id": "minimalist-design",
-      "title": "极简主义设计：少即是多的力量",
-      "date": "2026-07-08",
-      "tags": [
-        "设计",
-        "思考"
-      ],
-      "excerpt": "极简不是空洞，而是精准。探讨极简主义设计背后的理念和它在数字产品中的应用。",
-      "cover": "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
-      "readingTime": 7,
-      "type": "post",
-      "format": "md"
-    },
-    {
-      "file": "reading-notes-2026.md",
-      "id": "reading-notes-2026",
-      "title": "2026 上半年读书笔记精选",
-      "date": "2026-06-28",
-      "tags": [
-        "读书",
-        "随笔"
-      ],
-      "excerpt": "整理了上半年读过的几本好书，涵盖认知科学、文学、历史和自我成长领域。",
-      "cover": "linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%)",
-      "readingTime": 8,
-      "type": "post",
-      "format": "md"
-    },
-    {
-      "file": "responsive-design.md",
-      "id": "responsive-design",
-      "title": "响应式 Web 设计实战技巧",
-      "date": "2026-06-20",
-      "tags": [
-        "技术",
-        "CSS",
-        "设计"
-      ],
-      "excerpt": "移动优先、流式布局、媒体查询——构建适配所有屏幕的现代网页。",
-      "cover": "linear-gradient(135deg, #c471f5 0%, #fa71cd 100%)",
-      "readingTime": 9,
-      "type": "post",
-      "format": "md"
-    },
-    {
-      "file": "travel-kyoto.md",
-      "id": "travel-kyoto",
-      "title": "京都漫步：在古都寻找时间的痕迹",
-      "date": "2026-06-10",
-      "tags": [
-        "旅行",
-        "随笔"
-      ],
-      "excerpt": "一座城市最动人的不是景点，而是那些不经意间遇见的角落。记录京都之行的点滴。",
-      "cover": "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)",
-      "readingTime": 6,
-      "type": "post",
-      "format": "md"
-    },
-    {
-      "file": "经典语录.md",
+      "file": "Lifes/经典语录.md",
       "id": "经典语录",
       "title": "经典语录",
       "date": "2026-07-18",
@@ -407,17 +286,332 @@
       "format": "md"
     },
     {
-      "file": "test-pdf-article.pdf",
-      "id": "test-pdf-article",
-      "title": "PDF 文章示例",
+      "file": "Qt/QSlider QSS【Qt】.md",
+      "id": "qt-qslider-qss",
+      "title": "QSlider QSS 样式美化",
       "date": "2026-07-18",
       "tags": [
-        "测试",
-        "PDF"
+        "Qt",
+        "QSS"
       ],
-      "excerpt": "这是一篇 PDF 格式的文章，用于演示博客的 PDF 内嵌预览功能",
-      "cover": "linear-gradient(135deg, #f5576c 0%, #f093fb 100%)",
-      "readingTime": 3,
+      "excerpt": "使用 QSS 美化 QSlider 滑动条： groove 槽、handle 滑块、sub-page 已填充部分的样式定制。",
+      "cover": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+      "readingTime": 1,
+      "type": "post",
+      "format": "md"
+    },
+    {
+      "file": "Qt/Qt 5【Qt】.md",
+      "id": "qt5-overview",
+      "title": "Qt 5 概述",
+      "date": "2026-07-18",
+      "tags": [
+        "Qt",
+        "基础"
+      ],
+      "excerpt": "Qt 跨平台 C++ 图形用户界面应用程序框架概述：发展历史、核心模块、信号槽机制与事件循环。",
+      "cover": "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+      "readingTime": 167,
+      "type": "post",
+      "format": "md"
+    },
+    {
+      "file": "Qt/Qt 中的 Model_View 结构【Qt】.md",
+      "id": "qt-model-view",
+      "title": "Qt 中的 Model/View 结构",
+      "date": "2026-07-18",
+      "tags": [
+        "Qt",
+        "Model/View"
+      ],
+      "excerpt": "Model/View 架构将数据模型与用户界面分离，实现高效的数据显示与编辑，适用于大型数据集处理。",
+      "cover": "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
+      "readingTime": 5,
+      "type": "post",
+      "format": "md"
+    },
+    {
+      "file": "Qt/Qt 面试【Qt】.md",
+      "id": "qt-interview",
+      "title": "Qt 面试题精选",
+      "date": "2026-07-18",
+      "tags": [
+        "Qt",
+        "面试"
+      ],
+      "excerpt": "Qt 信号槽机制的优势与不足、事件过滤器、多线程、内存管理等常见面试题解析。",
+      "cover": "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+      "readingTime": 5,
+      "type": "post",
+      "format": "md"
+    },
+    {
+      "file": "Qt/Qt信号槽原理【Qt】.md",
+      "id": "qt-signal-slot-principle",
+      "title": "Qt 信号槽原理",
+      "date": "2026-07-18",
+      "tags": [
+        "Qt",
+        "信号槽"
+      ],
+      "excerpt": "Qt 信号与槽的实现基于元对象系统（MOC），预处理阶段将信号和槽的字符串值保存到容器中，运行时通过查找匹配完成调用。",
+      "cover": "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+      "readingTime": 2,
+      "type": "post",
+      "format": "md"
+    },
+    {
+      "file": "Qt/Qt几种多线程的几种用法【Qt】.md",
+      "id": "qt-multithreading",
+      "title": "Qt 多线程的几种用法",
+      "date": "2026-07-18",
+      "tags": [
+        "Qt",
+        "多线程"
+      ],
+      "excerpt": "Qt 中四种多线程实现方式：继承 QThread 重写 run()、moveToThread、QThreadPool + QRunnable、QtConcurrent。",
+      "cover": "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+      "readingTime": 5,
+      "type": "post",
+      "format": "md"
+    },
+    {
+      "file": "Qt/TCP_IP 【计算机网络】.md",
+      "id": "tcp-ip-protocol",
+      "title": "TCP/IP 协议详解",
+      "date": "2026-07-18",
+      "tags": [
+        "Qt",
+        "计算机网络"
+      ],
+      "excerpt": "TCP/UDP 报文格式、三次握手与四次挥手、拥塞控制、滑动窗口等 TCP/IP 核心协议知识点。",
+      "cover": "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)",
+      "readingTime": 14,
+      "type": "post",
+      "format": "md"
+    },
+    {
+      "file": "Qt/信号槽第五个参数【Qt】.md",
+      "id": "qt-signal-slot-connection-type",
+      "title": "Qt 信号槽第五个参数（连接类型）",
+      "date": "2026-07-18",
+      "tags": [
+        "Qt",
+        "信号槽"
+      ],
+      "excerpt": "Qt 信号槽连接类型详解：AutoConnection、DirectConnection、QueuedConnection、BlockingQueuedConnection、UniqueConnection。",
+      "cover": "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)",
+      "readingTime": 5,
+      "type": "post",
+      "format": "md"
+    },
+    {
+      "file": "Qt/部分QSS样式【QSS】.md",
+      "id": "qt-qss-styles",
+      "title": "部分 QSS 样式集合",
+      "date": "2026-07-18",
+      "tags": [
+        "Qt",
+        "QSS"
+      ],
+      "excerpt": "常用 QSS 样式片段集合：对话框标题栏、按钮、滚动条、输入框等组件的美化样式。",
+      "cover": "linear-gradient(135deg, #c471f5 0%, #fa71cd 100%)",
+      "readingTime": 1,
+      "type": "post",
+      "format": "md"
+    },
+    {
+      "file": "Qt/重写对话框【QSS】.md",
+      "id": "qt-custom-dialog",
+      "title": "重写对话框",
+      "date": "2026-07-18",
+      "tags": [
+        "Qt",
+        "QSS"
+      ],
+      "excerpt": "自定义对话框的实现：无边框窗口、标题栏拖拽、关闭按钮、QSS 样式美化完整代码示例。",
+      "cover": "linear-gradient(135deg, #f6d365 0%, #fda085 100%)",
+      "readingTime": 1,
+      "type": "post",
+      "format": "md"
+    },
+    {
+      "file": "Pdf/4-内存原理与分析.pdf",
+      "id": "pdf-memory-analysis",
+      "title": "内存原理与分析",
+      "date": "2026-07-18",
+      "tags": [
+        "C++",
+        "内存管理"
+      ],
+      "excerpt": "深入剖析计算机内存工作原理、内存布局、堆栈机制及内存分析技术。",
+      "cover": "linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%)",
+      "readingTime": 30,
+      "type": "post",
+      "format": "pdf"
+    },
+    {
+      "file": "Pdf/C++14标准.pdf",
+      "id": "pdf-cpp14-standard",
+      "title": "C++14 标准",
+      "date": "2026-07-18",
+      "tags": [
+        "C++",
+        "标准"
+      ],
+      "excerpt": "C++14 标准文档，涵盖泛型 lambda、返回类型推导、二进制字面量、std::make_unique 等新特性。",
+      "cover": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+      "readingTime": 60,
+      "type": "post",
+      "format": "pdf"
+    },
+    {
+      "file": "Pdf/Effective C++ 第2版(中文版).pdf",
+      "id": "pdf-effective-cpp",
+      "title": "Effective C++ 第2版（中文版）",
+      "date": "2026-07-18",
+      "tags": [
+        "C++",
+        "经典书籍"
+      ],
+      "excerpt": "Scott Meyers 经典著作，55 条改善程序与设计的准则，涵盖资源管理、模板、继承等最佳实践。",
+      "cover": "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+      "readingTime": 120,
+      "type": "post",
+      "format": "pdf"
+    },
+    {
+      "file": "Pdf/Git教程By廖雪峰.pdf.pdf",
+      "id": "pdf-git-tutorial",
+      "title": "Git 教程（廖雪峰）",
+      "date": "2026-07-18",
+      "tags": [
+        "Git",
+        "教程"
+      ],
+      "excerpt": "廖雪峰 Git 教程，从零开始掌握 Git 版本控制：仓库、分支、标签、远程协作等核心操作。",
+      "cover": "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+      "readingTime": 45,
+      "type": "post",
+      "format": "pdf"
+    },
+    {
+      "file": "Pdf/Google+C+++编程规范.pdf",
+      "id": "pdf-google-cpp-style",
+      "title": "Google C++ 编程规范",
+      "date": "2026-07-18",
+      "tags": [
+        "C++",
+        "编程规范"
+      ],
+      "excerpt": "Google C++ 编码规范指南，涵盖头文件、作用域、命名、类设计、格式等工程实践标准。",
+      "cover": "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
+      "readingTime": 40,
+      "type": "post",
+      "format": "pdf"
+    },
+    {
+      "file": "Pdf/SQL基础知识.pdf",
+      "id": "pdf-sql-basics",
+      "title": "SQL 基础知识",
+      "date": "2026-07-18",
+      "tags": [
+        "SQL",
+        "数据库"
+      ],
+      "excerpt": "SQL 基础教程：数据查询、过滤、排序、聚合、连接、子查询及表操作等核心语法。",
+      "cover": "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+      "readingTime": 30,
+      "type": "post",
+      "format": "pdf"
+    },
+    {
+      "file": "Pdf/从浏览器输入url到看到页面发生了什么.pdf",
+      "id": "pdf-url-to-page",
+      "title": "从浏览器输入 URL 到看到页面发生了什么",
+      "date": "2026-07-18",
+      "tags": [
+        "网络",
+        "前端"
+      ],
+      "excerpt": "经典面试题深度解析：DNS 解析、TCP 连接、HTTP 请求、服务器响应、浏览器渲染全流程。",
+      "cover": "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+      "readingTime": 20,
+      "type": "post",
+      "format": "pdf"
+    },
+    {
+      "file": "Pdf/提高C++性能的编程技术.pdf",
+      "id": "pdf-cpp-performance",
+      "title": "提高 C++ 性能的编程技术",
+      "date": "2026-07-18",
+      "tags": [
+        "C++",
+        "性能优化"
+      ],
+      "excerpt": "C++ 性能优化实战指南：对象创建、临时对象、内联、内存池、多线程优化等高性能编程技巧。",
+      "cover": "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)",
+      "readingTime": 90,
+      "type": "post",
+      "format": "pdf"
+    },
+    {
+      "file": "Pdf/深入理解C++11：C++11新特性解析与应用.pdf",
+      "id": "pdf-cpp11-deep-dive",
+      "title": "深入理解 C++11：C++11 新特性解析与应用",
+      "date": "2026-07-18",
+      "tags": [
+        "C++",
+        "C++11"
+      ],
+      "excerpt": "C++11 新特性全面解析：auto、lambda、右值引用、移动语义、可变参数模板、并发支持等。",
+      "cover": "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)",
+      "readingTime": 100,
+      "type": "post",
+      "format": "pdf"
+    },
+    {
+      "file": "Pdf/深度探索C++对象模型.pdf",
+      "id": "pdf-cpp-object-model",
+      "title": "深度探索 C++ 对象模型",
+      "date": "2026-07-18",
+      "tags": [
+        "C++",
+        "对象模型"
+      ],
+      "excerpt": "Stanley Lippman 经典著作，深入 C++ 对象内存布局、虚函数表、多重继承、模板实例化底层机制。",
+      "cover": "linear-gradient(135deg, #c471f5 0%, #fa71cd 100%)",
+      "readingTime": 120,
+      "type": "post",
+      "format": "pdf"
+    },
+    {
+      "file": "Pdf/设计模式精解－ GoF 23 种设计模式解析附 C++实现源码.pdf",
+      "id": "pdf-design-patterns-gof",
+      "title": "设计模式精解 — GoF 23 种设计模式解析",
+      "date": "2026-07-18",
+      "tags": [
+        "C++",
+        "设计模式"
+      ],
+      "excerpt": "GoF 23 种设计模式完整解析：创建型、结构型、行为型，每种模式附 C++ 实现源码与 UML 图。",
+      "cover": "linear-gradient(135deg, #f6d365 0%, #fda085 100%)",
+      "readingTime": 80,
+      "type": "post",
+      "format": "pdf"
+    },
+    {
+      "file": "Pdf/陈硕 - C++实践工程学.pdf",
+      "id": "pdf-cpp-engineering",
+      "title": "C++ 实践工程学（陈硕）",
+      "date": "2026-07-18",
+      "tags": [
+        "C++",
+        "工程实践"
+      ],
+      "excerpt": "陈硕关于 C++ 工程实践的深度思考：代码质量、项目架构、并发编程、网络编程等工程化话题。",
+      "cover": "linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%)",
+      "readingTime": 60,
       "type": "post",
       "format": "pdf"
     }

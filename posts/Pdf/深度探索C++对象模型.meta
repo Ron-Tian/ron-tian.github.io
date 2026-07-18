@@ -1,0 +1,10 @@
+---
+id: pdf-cpp-object-model
+title: "深度探索 C++ 对象模型"
+date: 2026-07-18
+tags: C++,对象模型
+excerpt: "Stanley Lippman 经典著作，深入 C++ 对象内存布局、虚函数表、多重继承、模板实例化底层机制。"
+cover: linear-gradient(135deg, #c471f5 0%, #fa71cd 100%)
+readingTime: 120
+type: post
+---

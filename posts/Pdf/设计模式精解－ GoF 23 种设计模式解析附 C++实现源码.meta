@@ -1,0 +1,10 @@
+---
+id: pdf-design-patterns-gof
+title: "设计模式精解 — GoF 23 种设计模式解析"
+date: 2026-07-18
+tags: C++,设计模式
+excerpt: "GoF 23 种设计模式完整解析：创建型、结构型、行为型，每种模式附 C++ 实现源码与 UML 图。"
+cover: linear-gradient(135deg, #f6d365 0%, #fda085 100%)
+readingTime: 80
+type: post
+---

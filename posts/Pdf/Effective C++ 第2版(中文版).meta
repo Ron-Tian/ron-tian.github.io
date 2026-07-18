@@ -1,0 +1,10 @@
+---
+id: pdf-effective-cpp
+title: "Effective C++ 第2版（中文版）"
+date: 2026-07-18
+tags: C++,经典书籍
+excerpt: "Scott Meyers 经典著作，55 条改善程序与设计的准则，涵盖资源管理、模板、继承等最佳实践。"
+cover: linear-gradient(135deg, #f093fb 0%, #f5576c 100%)
+readingTime: 120
+type: post
+---
