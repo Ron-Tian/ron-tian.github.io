@@ -1,48 +1,92 @@
+# ============================================================
+# GitHub Actions 自动部署工作流
+# 作用：每次推送代码到 main 分支时，自动构建并部署到 GitHub Pages
+# 部署地址：https://ron-tian.github.io/
+# ============================================================
+
+# 工作流名称（显示在 GitHub Actions 页面的左侧栏）
 name: Deploy to GitHub Pages
 
+# ------------------------------------------------------------
+# 触发条件：什么时候自动运行这个工作流
+# ------------------------------------------------------------
 on:
+  # 第一种触发：当有代码推送到 main 或 master 分支时自动运行
+  # （比如你在本地 git push origin main 之后就会触发）
   push:
     branches: [main, master]
+
+  # 第二种触发：手动触发
+  # （在 GitHub 仓库 → Actions 页面 → 选中这个工作流 → 点击 "Run workflow" 按钮）
   workflow_dispatch:
 
+# ------------------------------------------------------------
+# 权限设置：告诉 GitHub 这个工作流能做什么操作
+# ------------------------------------------------------------
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: read    # 读取仓库代码（checkout 需要）
+  pages: write      # 写入 GitHub Pages（部署需要）
+  id-token: write   # 生成身份令牌（GitHub Pages 部署的硬性要求）
 
+# ------------------------------------------------------------
+# 并发控制：防止重复部署
+# ------------------------------------------------------------
 concurrency:
-  group: pages
-  cancel-in-progress: true
+  group: pages              # 分组名：同一组的任务互斥执行
+  cancel-in-progress: true  # 如果正在部署时又推送了新代码，取消正在进行的部署，用最新代码重新部署
 
+# ------------------------------------------------------------
+# 任务定义：这个工作流包含哪些步骤
+# 分为两个 job：build（构建）→ deploy（部署）
+# ------------------------------------------------------------
 jobs:
+
+  # ============================================================
+  # 第一个任务：构建
+  # 作用：拉取代码 → 生成 manifest.json → 打包成可部署的产物
+  # ============================================================
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest    # 运行环境：GitHub 提供的免费 Ubuntu Linux 虚拟机
+
     steps:
+      # 步骤 1：拉取你的代码到虚拟机
       - uses: actions/checkout@v4
 
+      # 步骤 2：安装 Python 环境（因为构建脚本 build.py 是 Python 写的）
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.13"
 
+      # 步骤 3：运行构建脚本，扫描 posts/ 目录生成 manifest.json
+      # manifest.json 是文章索引文件，博客前端通过它加载文章列表
       - name: Generate manifest.json
         run: python scripts/build.py
 
+      # 步骤 4：初始化 GitHub Pages 环境（配置部署相关参数）
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      # 步骤 5：把当前目录（.）打包成部署产物
+      # path: . 表示整个项目根目录都会被部署
+      # 包括 index.html、css/、js/、posts/、stock/ 等所有文件
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: .
 
+  # ============================================================
+  # 第二个任务：部署
+  # 作用：把构建好的产物发布到 GitHub Pages，让网站可访问
+  # ============================================================
   deploy:
-    needs: build
-    runs-on: ubuntu-latest
+    needs: build              # 依赖关系：必须等 build 任务成功后才能执行
+    runs-on: ubuntu-latest    # 运行环境：同样是 Ubuntu 虚拟机
     environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      name: github-pages                          # 部署目标环境：GitHub Pages
+      url: ${{ steps.deployment.outputs.page_url }} # 部署完成后，这里会显示网站地址
     steps:
+      # 步骤 1：执行部署，把产物发布到 GitHub Pages
       - name: Deploy to GitHub Pages
-        id: deployment
+        id: deployment       # 给这一步起个 ID，上面的 url 就是从这里取的输出值
         uses: actions/deploy-pages@v4
