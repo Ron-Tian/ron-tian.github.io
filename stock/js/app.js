@@ -21,8 +21,8 @@ const CORS_PROXIES = [
   (url) => `https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(url)}`,
 ];
 
-// ─── 自选股管理 ───
-const STORAGE_KEY = 'watchlist_stocks';
+// ─── 自选股管理（localStorage 持久化） ───
+const STORAGE_KEY = 'xiaowuzi_stock_watchlist'; // 带项目前缀，避免与其他站点冲突
 
 function getWatchlist() {
   try {
@@ -55,6 +55,68 @@ function removeFromWatchlist(code) {
   list = list.filter((c) => c !== code);
   saveWatchlist(list);
   refreshAll();
+}
+
+// 导出自选股（生成可复制的文本）
+function exportWatchlist() {
+  const list = getWatchlist();
+  if (list.length === 0) {
+    showToast('自选股为空，无可导出内容');
+    return;
+  }
+  const text = list.join(',');
+  // 尝试复制到剪贴板
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast(`已复制 ${list.length} 只自选股到剪贴板`);
+    }).catch(() => {
+      prompt('请手动复制以下内容：', text);
+    });
+  } else {
+    prompt('请手动复制以下内容：', text);
+  }
+}
+
+// 导入自选股（从文本解析，逗号或换行分隔）
+function importWatchlist() {
+  const text = prompt('请输入股票代码（逗号或换行分隔）：\n如：sh601318, sz000001, sh600519');
+  if (!text || !text.trim()) return;
+
+  const codes = text
+    .split(/[,\n\r\s]+/)
+    .map(c => c.trim().toLowerCase())
+    .filter(c => /^[a-z]{2}\d{6}$/.test(c)); // 验证格式：sh/sz/bj + 6位数字
+
+  if (codes.length === 0) {
+    showToast('未识别到有效代码（格式：sh601318）');
+    return;
+  }
+
+  const list = getWatchlist();
+  let added = 0;
+  for (const code of codes) {
+    if (!list.includes(code)) {
+      list.push(code);
+      added++;
+    }
+  }
+  saveWatchlist(list);
+  refreshAll();
+  showToast(`导入完成：新增 ${added} 只，共 ${list.length} 只`);
+}
+
+// 清空自选股
+function clearWatchlist() {
+  const list = getWatchlist();
+  if (list.length === 0) {
+    showToast('自选股已为空');
+    return;
+  }
+  if (confirm(`确定清空全部 ${list.length} 只自选股？此操作不可撤销。`)) {
+    saveWatchlist([]);
+    refreshAll();
+    showToast('已清空自选股');
+  }
 }
 
 // ─── Toast 提示 ───
@@ -581,6 +643,10 @@ function sortValuation(key) {
 async function refreshAll() {
   updateTimestamp();
   const watchlist = getWatchlist();
+
+  // 更新自选股数量
+  const countEl = document.getElementById('watchlistCount');
+  if (countEl) countEl.textContent = watchlist.length;
 
   // 并行获取指数和自选股数据
   const [indicesData, watchlistData] = await Promise.all([
