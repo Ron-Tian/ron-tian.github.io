@@ -645,22 +645,6 @@ function generateAnalysis(quotes) {
   };
 }
 
-// ─── 选股（前端） ───
-function generatePicks(quotes) {
-  return quotes
-    .filter((q) => q.price > 0 && q.changePercent > 2 && q.amount > 10000)
-    .sort((a, b) => b.changePercent - a.changePercent)
-    .map((q) => ({
-      code: q.code,
-      name: q.name,
-      price: q.price,
-      changePercent: q.changePercent,
-      volume: q.volume,
-      amount: q.amount,
-      reason: `涨幅 ${q.changePercent.toFixed(2)}%，成交额 ${(q.amount / 10000).toFixed(2)}亿，量价齐升。`,
-    }));
-}
-
 // ─── 渲染：大盘指数 ───
 function renderIndices(data) {
   const grid = document.getElementById('indicesGrid');
@@ -794,47 +778,6 @@ function renderAnalysis(data) {
   }).join('');
 }
 
-// ─── 渲染：选股结果 ───
-function renderPicks(data) {
-  const list = getWatchlist();
-  const tbody = document.getElementById('picksBody');
-  const empty = document.getElementById('picksEmpty');
-
-  if (list.length === 0) {
-    tbody.innerHTML = '';
-    empty.style.display = 'block';
-    return;
-  }
-
-  if (!data || data.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--red)">数据加载失败</td></tr>`;
-    empty.style.display = 'none';
-    return;
-  }
-
-  const picks = generatePicks(data);
-  if (picks.length === 0) {
-    tbody.innerHTML = '';
-    empty.style.display = 'block';
-    return;
-  }
-  empty.style.display = 'none';
-
-  tbody.innerHTML = picks.map((p) => {
-    const cls = p.changePercent > 0 ? 'up' : 'down';
-    return `
-      <tr>
-        <td class="stock-name">${p.name}</td>
-        <td class="stock-code">${p.code}</td>
-        <td>${p.price.toFixed(2)}</td>
-        <td class="${cls}">+${p.changePercent.toFixed(2)}%</td>
-        <td>${(p.amount / 10000).toFixed(2)}</td>
-        <td style="color:var(--text-dim);font-size:13px">${p.reason}</td>
-      </tr>
-    `;
-  }).join('');
-}
-
 // ─── 价值筛选：加载 PE<30 且 市值>10亿 的股票 ───
 
 let valuationData = [];      // 缓存筛选数据
@@ -942,7 +885,6 @@ async function refreshAll() {
   renderIndices(indicesData);
   renderWatchlist(watchlistData);
   renderAnalysis(watchlistData);
-  renderPicks(watchlistData);
 
   // 加载价值筛选数据（静态 JSON，每日更新）
   loadValuation();
