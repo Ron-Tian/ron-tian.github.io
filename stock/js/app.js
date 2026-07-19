@@ -24,13 +24,31 @@ const CORS_PROXIES = [
 // ─── 自选股管理（localStorage 持久化 + 可选云端同步） ───
 const STORAGE_KEY = 'xiaowuzi_stock_watchlist'; // 带项目前缀，避免与其他站点冲突
 
-// 云端同步配置（部署 Cloudflare Worker 后改为 true 并填入 URL 和 API Key）
-// 详见 stock/worker/README.md 部署指南
+// ─── 云端同步配置（三选一，默认全部禁用） ───
+// 方式1：Cloudflare Worker（独立后端，推荐）
+// 部署指南：stock/worker/README.md
 const CLOUD_CONFIG = {
-  enabled: false,                                                    // 改为 true 启用
-  workerUrl: '',                                                     // Worker 部署后的 URL
-  apiKey: '',                                                        // 部署时设置的 API_KEY
+  enabled: false,
+  workerUrl: '',
+  apiKey: '',
 };
+
+// 方式2：GitHub 仓库文件（直接可用，每次更新会触发博客部署）
+// 创建 fine-grained token：https://github.com/settings/tokens?type=beta
+//   - Token name: "Stock Watchlist Sync"
+//   - Repository: Ron-Tian/Ron-Tian.github.io
+//   - Permissions: Contents → Read and write
+//   - 复制 token 填入下方
+const GITHUB_CONFIG = {
+  enabled: false,
+  token: '',      // 填入 fine-grained token
+  owner: 'Ron-Tian',
+  repo: 'Ron-Tian.github.io',
+  path: 'stock/data/watchlist.json',
+  branch: 'main',
+};
+
+// 方式3：URL 参数分享（已实现，无需配置）
 
 // 云端同步状态
 let cloudSyncStatus = 'idle'; // idle / syncing / success / error / offline
@@ -48,6 +66,8 @@ function saveWatchlist(list) {
   // 异步同步到云端（不阻塞 UI）
   if (CLOUD_CONFIG.enabled) {
     syncToCloud(list);
+  } else if (GITHUB_CONFIG.enabled) {
+    syncToGitHub(list);
   }
 }
 
@@ -108,6 +128,97 @@ async function loadFromCloud() {
     }
   } catch (e) {
     console.warn('云端加载失败:', e.message);
+    cloudSyncStatus = 'error';
+  }
+  updateCloudStatus();
+  return false;
+}
+
+// ─── GitHub 仓库文件同步 ───
+async function syncToGitHub(list) {
+  if (!GITHUB_CONFIG.enabled || !GITHUB_CONFIG.token) return;
+
+  cloudSyncStatus = 'syncing';
+  updateCloudStatus();
+
+  try {
+    // 1. 获取当前文件内容和 SHA
+    const getUrl = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}?ref=${GITHUB_CONFIG.branch}`;
+    const getRes = await fetch(getUrl, {
+      headers: { 'Authorization': `token ${GITHUB_CONFIG.token}`, 'Accept': 'application/vnd.github.v3+json' },
+      signal: AbortSignal.timeout(10000),
+    });
+
+    let sha = '';
+    if (getRes.ok) {
+      const fileData = await getRes.json();
+      sha = fileData.sha;
+    }
+
+    // 2. 更新文件
+    const putUrl = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`;
+    const body = {
+      message: `data: 更新自选股 ${new Date().toISOString()}`,
+      content: btoa(JSON.stringify(list)),
+      branch: GITHUB_CONFIG.branch,
+    };
+    if (sha) body.sha = sha;
+
+    const putRes = await fetch(putUrl, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${GITHUB_CONFIG.token}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(15000),
+    });
+
+    if (!putRes.ok) {
+      const err = await putRes.json().catch(() => ({}));
+      throw new Error(err.message || 'HTTP ' + putRes.status);
+    }
+
+    cloudSyncStatus = 'success';
+  } catch (e) {
+    console.warn('GitHub 同步失败:', e.message);
+    cloudSyncStatus = 'error';
+  }
+  updateCloudStatus();
+}
+
+async function loadFromGitHub() {
+  if (!GITHUB_CONFIG.enabled || !GITHUB_CONFIG.token) return false;
+
+  cloudSyncStatus = 'syncing';
+  updateCloudStatus();
+
+  try {
+    const url = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}?ref=${GITHUB_CONFIG.branch}`;
+    const res = await fetch(url, {
+      headers: { 'Authorization': `token ${GITHUB_CONFIG.token}`, 'Accept': 'application/vnd.github.v3+json' },
+      signal: AbortSignal.timeout(10000),
+    });
+
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+
+    const fileData = await res.json();
+    const content = JSON.parse(atob(fileData.content.replace(/\n/g, '')));
+
+    if (Array.isArray(content)) {
+      const cloudSet = new Set(content);
+      const local = getWatchlist();
+      const localOnly = local.filter(c => !cloudSet.has(c));
+      const merged = [...content, ...localOnly];
+
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+      cloudSyncStatus = 'success';
+      updateCloudStatus();
+      return content.length > 0;
+    }
+  } catch (e) {
+    console.warn('GitHub 加载失败:', e.message);
     cloudSyncStatus = 'error';
   }
   updateCloudStatus();
@@ -823,18 +934,22 @@ document.getElementById('refreshBtn').addEventListener('click', refreshAll);
 // 1. 从URL参数导入自选股（跨设备迁移）
 loadWatchlistFromUrl();
 
-// 2. 从云端加载（如果启用了 Cloudflare Worker 同步）
-//    云端有数据则合并到本地，然后渲染
+// 2. 从云端加载
 if (CLOUD_CONFIG.enabled) {
   loadFromCloud().then(() => {
-    // 3. 如果本地和云端都为空，设置默认自选股
+    if (getWatchlist().length === 0) {
+      saveWatchlist(['sh601318', 'sz000001', 'sh600519', 'sz000858', 'sz300750']);
+    }
+    refreshAll();
+  });
+} else if (GITHUB_CONFIG.enabled) {
+  loadFromGitHub().then(() => {
     if (getWatchlist().length === 0) {
       saveWatchlist(['sh601318', 'sz000001', 'sh600519', 'sz000858', 'sz300750']);
     }
     refreshAll();
   });
 } else {
-  // 未启用云端同步，直接检查本地
   if (getWatchlist().length === 0) {
     saveWatchlist(['sh601318', 'sz000001', 'sh600519', 'sz000858', 'sz300750']);
   }
