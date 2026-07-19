@@ -376,3 +376,38 @@ body {
   .stock-table { font-size: 12px; }
   .stock-table th, .stock-table td { padding: 8px 10px; }
 }
+
+/* ─── 价值筛选板块 ─── */
+.valuation-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin-bottom: 16px;
+  padding: 14px 18px;
+  background: var(--bg-card);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+.valuation-meta .valuation-count b {
+  color: var(--text);
+  font-size: 16px;
+}
+
+.valuation-meta .valuation-cond {
+  color: var(--text-dim);
+  font-size: 13px;
+}
+
+/* 表头排序可点击效果 */
+#valuationTable th[onclick] {
+  user-select: none;
+  transition: background 0.2s;
+}
+
+#valuationTable th[onclick]:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+}

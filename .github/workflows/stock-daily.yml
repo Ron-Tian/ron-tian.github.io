@@ -1,0 +1,83 @@
+# ============================================================
+# A股价值筛选 — 每日定时任务
+# 作用：每个交易日收盘后自动筛选 PE<30 且 市值>10亿 的股票
+#       生成 JSON 数据文件，提交到仓库触发博客自动部署
+# ============================================================
+
+name: Stock Daily Filter
+
+# ------------------------------------------------------------
+# 触发条件
+# ------------------------------------------------------------
+on:
+  # 定时触发：每天 UTC 08:00（北京时间 16:00）运行
+  # A股 15:00 收盘，16:00 数据已更新完毕
+  # 注意：GitHub Actions cron 最低保证 5 分钟精度，可能延迟
+  schedule:
+    - cron: '0 8 * * 1-6'  # 周一到周六（周六补跑周五数据）
+
+  # 手动触发：在 GitHub Actions 页面点 "Run workflow"
+  workflow_dispatch:
+
+# ------------------------------------------------------------
+# 权限：需要写入仓库（提交 JSON 数据文件）
+# ------------------------------------------------------------
+permissions:
+  contents: write
+
+# ------------------------------------------------------------
+# 任务
+# ------------------------------------------------------------
+jobs:
+  filter:
+    runs-on: ubuntu-latest
+    steps:
+      # 步骤 1：拉取代码
+      - uses: actions/checkout@v4
+
+      # 步骤 2：安装 Python
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      # 步骤 3：运行筛选脚本
+      # 从东方财富获取全A股数据，筛选 PE<30 且 市值>10亿
+      # 输出 stock/data/valuation.json
+      - name: Run stock filter
+        run: python scripts/stock-filter.py
+
+      # 步骤 4：提交并推送生成的 JSON 数据
+      # 只有 valuation.json 有变化时才提交
+      - name: Commit and push data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add stock/data/valuation.json
+          if git diff --cached --quiet; then
+            echo "数据无变化，跳过提交"
+          else
+            git commit -m "data: 更新A股价值筛选数据 $(date -u -d '+8 hours' '+%Y-%m-%d %H:%M')"
+            git push
+          fi
+
+      # 步骤 5：触发博客部署工作流（让页面加载最新数据）
+      # 如果上一步已经 push 了，deploy.yml 会自动触发
+      # 这一步只是确保即使数据没变化也能手动联动
+      - name: Summary
+        if: always()
+        run: |
+          echo "### 筛选结果摘要" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -f stock/data/valuation.json ]; then
+            python -c "
+            import json
+            with open('stock/data/valuation.json') as f:
+                d = json.load(f)
+            print(f'更新时间: {d[\"update_time\"]}')
+            print(f'符合条件: {d[\"total\"]} 只')
+            print(f'筛选条件: PE < {d[\"filters\"][\"pe_max\"]} 且 市值 > {d[\"filters\"][\"market_cap_min_yi\"]}亿')
+            " >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠ 数据文件未生成" >> $GITHUB_STEP_SUMMARY
+          fi

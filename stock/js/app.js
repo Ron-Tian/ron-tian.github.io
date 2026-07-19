@@ -488,6 +488,95 @@ function renderPicks(data) {
   }).join('');
 }
 
+// ─── 价值筛选：加载 PE<30 且 市值>10亿 的股票 ───
+
+let valuationData = [];      // 缓存筛选数据
+let valuationSortKey = 'pe'; // 当前排序字段
+let valuationSortAsc = true; // 升序/降序
+
+async function loadValuation() {
+  try {
+    // 加载 GitHub Pages 上的静态 JSON 文件
+    const res = await fetch('data/valuation.json?t=' + Date.now(), { cache: 'no-cache' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    valuationData = data.stocks || [];
+    renderValuation(data);
+  } catch (e) {
+    console.warn('价值筛选数据加载失败:', e.message);
+    const empty = document.getElementById('valuationEmpty');
+    if (empty) {
+      empty.innerHTML = `
+        <p>数据暂未生成</p>
+        <p class="muted">每日收盘后自动更新，或稍后刷新重试</p>
+      `;
+    }
+  }
+}
+
+function renderValuation(data) {
+  const tbody = document.getElementById('valuationBody');
+  const empty = document.getElementById('valuationEmpty');
+  const meta = document.getElementById('valuationMeta');
+
+  if (!valuationData.length) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  // 显示更新时间和总数
+  meta.innerHTML = `
+    <span class="valuation-time">📅 更新于 ${data.update_time}</span>
+    <span class="valuation-count">共 <b>${data.total}</b> 只符合条件的股票</span>
+    <span class="valuation-cond">PE < ${data.filters.pe_max} · 市值 > ${data.filters.market_cap_min_yi}亿 · 已排除 ST/亏损</span>
+  `;
+
+  renderValuationRows();
+}
+
+function renderValuationRows() {
+  const tbody = document.getElementById('valuationBody');
+
+  // 排序
+  const sorted = [...valuationData].sort((a, b) => {
+    let va = a[valuationSortKey];
+    let vb = b[valuationSortKey];
+    // 字符串比较
+    if (typeof va === 'string') {
+      return valuationSortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+    }
+    return valuationSortAsc ? va - vb : vb - va;
+  });
+
+  tbody.innerHTML = sorted.map((s) => {
+    const cls = s.change_pct > 0 ? 'up' : s.change_pct < 0 ? 'down' : 'flat';
+    const sign = s.change_pct > 0 ? '+' : '';
+    return `
+      <tr>
+        <td><b>${s.pe.toFixed(2)}</b></td>
+        <td>${s.market_cap.toFixed(2)}</td>
+        <td class="stock-name">${s.name}</td>
+        <td class="stock-code">${s.code}</td>
+        <td>${s.price.toFixed(2)}</td>
+        <td class="${cls}">${sign}${s.change_pct.toFixed(2)}%</td>
+        <td style="color:var(--text-dim);font-size:13px">${s.industry || '--'}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function sortValuation(key) {
+  if (valuationSortKey === key) {
+    valuationSortAsc = !valuationSortAsc;
+  } else {
+    valuationSortKey = key;
+    valuationSortAsc = true;
+  }
+  renderValuationRows();
+}
+
 // ─── 刷新全部（统一获取数据，避免重复请求） ───
 async function refreshAll() {
   updateTimestamp();
@@ -503,6 +592,9 @@ async function refreshAll() {
   renderWatchlist(watchlistData);
   renderAnalysis(watchlistData);
   renderPicks(watchlistData);
+
+  // 加载价值筛选数据（静态 JSON，每日更新）
+  loadValuation();
 
   updateTimestamp();
 }

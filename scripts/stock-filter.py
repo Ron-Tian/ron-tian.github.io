@@ -1,0 +1,258 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+A股价值筛选脚本
+=================
+从东方财富接口获取全A股实时数据，筛选：
+  - 市盈率(动态) < 30
+  - 总市值 > 10亿元
+  - 排除 ST、*ST 股票
+  - 排除负市盈率（亏损股）
+
+输出：stock/data/valuation.json
+
+运行方式：
+  python scripts/stock-filter.py
+
+数据来源：东方财富网行情接口（公开免费）
+  http://push2.eastmoney.com/api/qt/clist/get
+"""
+
+import json
+import os
+import sys
+import time
+from datetime import datetime, timezone, timedelta
+from urllib.request import urlopen, Request
+from urllib.error import URLError, HTTPError
+
+# ============================================================
+# 配置
+# ============================================================
+
+# 东方财富接口基础地址（沪深A股全部）
+# fs 参数说明：
+#   m:0 t:6  → 深圳主板
+#   m:0 t:80 → 创业板
+#   m:1 t:2  → 上海主板
+#   m:1 t:23 → 科创板
+#   m:0 t:81 s:2048 → 北交所
+EASTMONEY_BASE = (
+    "http://push2.eastmoney.com/api/qt/clist/get"
+    "?pn={page}&pz=100&po=1&np=1&fltt=2&invt=2"
+    "&fid=f3&fs=m:0+t:6,m:0+t:80,m:1+t:2,m:1+t:23,m:0+t:81+s:2048"
+    "&fields=f2,f3,f4,f5,f6,f9,f12,f14,f15,f16,f17,f20,f100"
+)
+
+# 字段映射（东方财富字段编号 → 含义）
+# f2: 最新价    f3: 涨跌幅    f4: 涨跌额
+# f5: 成交量    f6: 成交额    f9: 市盈率(动态)
+# f12: 代码     f14: 名称     f15: 最高
+# f16: 最低     f17: 今开     f20: 总市值
+# f100: 行业
+
+# 筛选条件
+PE_MAX = 30          # 市盈率上限
+MARKET_CAP_MIN = 10  # 市值下限（亿元）
+
+# 输出路径
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
+OUTPUT_DIR = os.path.join(PROJECT_ROOT, "stock", "data")
+OUTPUT_FILE = os.path.join(OUTPUT_DIR, "valuation.json")
+
+# 请求头（模拟浏览器，避免被拦截）
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+    "Referer": "https://quote.eastmoney.com/",
+}
+
+
+def fetch_stock_data():
+    """
+    从东方财富接口分页获取全A股数据。
+    接口每次最多返回 100 条，需要分页循环获取全部约 5800+ 只股票。
+    包含重试机制，避免被限流后中断。
+    """
+    print("正在从东方财富获取全A股数据（分页获取）...")
+
+    all_stocks = []
+    page = 1
+    total = 0
+    max_retries = 3
+
+    while True:
+        url = EASTMONEY_BASE.format(page=page)
+
+        # 重试机制
+        data = None
+        for retry in range(max_retries):
+            req = Request(url, headers=HEADERS)
+            try:
+                with urlopen(req, timeout=30) as resp:
+                    raw = resp.read().decode("utf-8")
+                data = json.loads(raw)
+                break
+            except Exception as e:
+                if retry < max_retries - 1:
+                    wait = 2 * (retry + 1)  # 2s, 4s, 6s
+                    print(f"  ⚠ 第 {page} 页第 {retry+1} 次失败: {e}，{wait}s 后重试...")
+                    time.sleep(wait)
+                else:
+                    print(f"  ❌ 第 {page} 页重试 {max_retries} 次仍失败，跳过")
+                    # 如果已有数据，继续处理；否则退出
+                    if all_stocks:
+                        page += 1
+                        break
+                    else:
+                        sys.exit(1)
+
+        if not data or "data" not in data or not data["data"]:
+            if all_stocks:
+                print(f"  接口无更多数据，停止获取")
+                break
+            else:
+                print("  ❌ 接口返回数据为空")
+                sys.exit(1)
+
+        diff = data["data"].get("diff", []) or data["data"].get("list", [])
+        if not diff:
+            break
+
+        # 第一页时获取总数
+        if page == 1:
+            total = data["data"].get("total", 0)
+            print(f"  全A股共 {total} 只股票，需获取 {(total + 99) // 100} 页")
+
+        all_stocks.extend(diff)
+
+        if page % 10 == 0:
+            print(f"  已获取 {page} 页，累计 {len(all_stocks)} 只...")
+
+        # 如果已获取全部，退出
+        if len(all_stocks) >= total or len(diff) < 100:
+            break
+
+        page += 1
+        time.sleep(0.5)  # 控制请求频率，避免被限流
+
+    print(f"获取完成：共 {len(all_stocks)} 只股票数据")
+    return all_stocks
+
+
+def filter_stocks(stocks):
+    """
+    筛选符合条件的股票：
+    - 市盈率 > 0 且 < 30（排除亏损股和负市盈率）
+    - 总市值 > 10亿
+    - 排除 ST、*ST 股票
+    - 排除名称为空的股票
+    """
+    result = []
+
+    for s in stocks:
+        code = s.get("f12", "")
+        name = s.get("f14", "")
+        pe = s.get("f9")  # 市盈率(动态)
+        market_cap = s.get("f20")  # 总市值（元）
+
+        # 跳过无效数据
+        if not code or not name:
+            continue
+        if pe is None or pe <= 0:
+            continue  # 排除亏损或无市盈率
+        if market_cap is None or market_cap <= 0:
+            continue
+
+        # 市值转亿元
+        market_cap_yi = market_cap / 1e8
+
+        # 筛选条件
+        if pe >= PE_MAX:
+            continue
+        if market_cap_yi <= MARKET_CAP_MIN:
+            continue
+
+        # 排除 ST 股票
+        if "ST" in name or "st" in name:
+            continue
+
+        # 排除退市股
+        if "退" in name:
+            continue
+
+        result.append({
+            "code": code,
+            "name": name,
+            "price": round(s.get("f2", 0), 2),
+            "change_pct": round(s.get("f3", 0), 2),
+            "change_amt": round(s.get("f4", 0), 2),
+            "volume": s.get("f5", 0),       # 成交量（手）
+            "turnover": round(s.get("f6", 0) / 1e4, 0),  # 成交额（万元）
+            "pe": round(pe, 2),             # 市盈率
+            "market_cap": round(market_cap_yi, 2),  # 总市值（亿元）
+            "industry": s.get("f100", ""),  # 行业
+            "open": round(s.get("f17", 0), 2),
+            "high": round(s.get("f15", 0), 2),
+            "low": round(s.get("f16", 0), 2),
+        })
+
+    # 按市盈率从低到高排序
+    result.sort(key=lambda x: x["pe"])
+
+    print(f"筛选完成：{len(result)} 只股票符合条件（PE<{PE_MAX} 且 市值>{MARKET_CAP_MIN}亿）")
+    return result
+
+
+def generate_output(stocks):
+    """生成 JSON 输出文件"""
+    # 确保输出目录存在
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+    # 北京时间
+    tz_beijing = timezone(timedelta(hours=8))
+    now = datetime.now(tz_beijing)
+
+    output = {
+        "update_time": now.strftime("%Y-%m-%d %H:%M:%S"),
+        "update_timestamp": int(now.timestamp()),
+        "filters": {
+            "pe_max": PE_MAX,
+            "market_cap_min_yi": MARKET_CAP_MIN,
+            "exclude_st": True,
+            "exclude_negative_pe": True,
+        },
+        "total": len(stocks),
+        "stocks": stocks,
+    }
+
+    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+        json.dump(output, f, ensure_ascii=False, indent=2)
+
+    print(f"✅ 结果已写入: {OUTPUT_FILE}")
+    print(f"   更新时间: {output['update_time']}")
+    print(f"   符合条件: {output['total']} 只")
+
+    # 打印前 10 只作为预览
+    if stocks:
+        print(f"\n{'代码':<8} {'名称':<10} {'市盈率':>8} {'市值(亿)':>10} {'涨跌幅':>8}")
+        print("-" * 50)
+        for s in stocks[:10]:
+            print(f"{s['code']:<8} {s['name']:<10} {s['pe']:>8.2f} {s['market_cap']:>10.2f} {s['change_pct']:>+7.2f}%")
+
+
+def main():
+    print("=" * 60)
+    print(f"A股价值筛选 — PE<{PE_MAX} 且 市值>{MARKET_CAP_MIN}亿")
+    print(f"运行时间: {datetime.now(timezone(timedelta(hours=8))).strftime('%Y-%m-%d %H:%M:%S')}")
+    print("=" * 60)
+
+    stocks = fetch_stock_data()
+    filtered = filter_stocks(stocks)
+    generate_output(filtered)
+
+    print("\n✅ 完成！")
+
+
+if __name__ == "__main__":
+    main()
